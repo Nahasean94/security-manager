@@ -1,0 +1,25 @@
+body {
+    background: #c7c8c9;
+}
+
+.names {
+    margin-bottom:0.1em ;
+}
+
+.feed-meta {
+    font-size: 0.75em;
+}
+
+.bd-sidebar {
+    border-right: 1px solid rgba(0, 0, 0, .1);
+}
+
+.bd-content {
+    margin-top: 20%;
+}
+
+.sign-in-form {
+    padding: 10px;
+    border: 1px solid #ffffff;
+    background: white;
+}
