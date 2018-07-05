@@ -2,7 +2,7 @@
   "name": "security-manager",
   "version": "0.1.0",
   "private": true,
-  "main": "public/electron.js",
+  "main": "public/test.js",
   "dependencies": {
     "classnames": "^2.2.5",
     "electron-is-dev": "^0.3.0",
@@ -26,7 +26,11 @@
     "redux-thunk": "^2.2.0",
     "shortid": "^2.2.8",
     "sortablejs": "^1.7.0",
-    "validator": "^9.1.2"
+    "validator": "^9.1.2",
+    "jsonwebtoken": "^8.2.1",
+    "graphql": "^0.12.3",
+    "graphql-react": "^1.0.1",
+    "graphql-tag": "^2.9.1"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -15,6 +15,30 @@ class App extends Component {
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
+        // const guards = [{
+        //     id: 'wewe',
+        //     password: 'wewe',
+        //     first_name:'Sean',
+        //     last_name:'Njenga'
+        //
+        // },
+        //     {
+        //         id: 'sdsd',
+        //         password: 'sdsd',
+        //         first_name:'Kev',
+        //         last_name:'John'
+        //     },
+        //     {
+        //         id: 'ww',
+        //         password: 'ww',
+        //         first_name:'Mike',
+        //         last_name:'Ndathe'
+        //     }]
+        // guards.map(guard => {
+        //     ipcRenderer.send('save-guard', {
+        //         ...guard
+        //     })
+        // })
     }
 
     onChange(e) {
@@ -23,8 +47,14 @@ class App extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        this.setState({guards:[...this.state.guards,this.state.id]})
-        this.setState({id:'',password:''})
+        ipcRenderer.send('get-guard', {id: this.state.id, password: this.state.password})
+        ipcRenderer.on('got-guard', (event,guard) => {
+            if (guard) {
+                this.setState({guards: [...this.state.guards, guard.first_name+" "+guard.last_name]})
+                ipcRenderer.send('sign-in',{guard:guard,time:new Date()})
+            }
+        })
+        this.setState({id: '', password: ''})
     }
 
 

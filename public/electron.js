@@ -19,7 +19,7 @@ let mainWindow
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1400, height: 880, resizable: true, webPreferences: {
+        width: 1000, height: 680, resizable: true, webPreferences: {
             webSecurity: false
         }
     })
@@ -41,20 +41,17 @@ app.on('activate', () => {
     }
 })
 
-
-ipc.on('save-playlist', (event, arg) => {
-    db.insert(arg, function (err, newDoc) {   // Callback is optional
-        event.sender.send('saved-file', newDoc)
+ipc.on('save-guard', (event, arg) => {
+    db.insert(arg, function (err, newDoc) {
+        event.sender.send('saved-guard', newDoc)
     })
-
 })
-ipc.on('get-playlist', (event, arg) => {
-    db.find({date: arg}).sort({id: 1}).exec((err, docs) => {
-        event.sender.send('got-playlist', docs)
+ipc.on('get-guard', (event, arg) => {
+    db.findOne({id: arg.id,password:arg.password}).sort({id: 1}).exec((err, docs) => {
+        event.sender.send('got-guard', docs)
     })
-
 })
-ipc.on('delete-file', (event, arg) => {
+ipc.on('delete-guard', (event, arg) => {
     db.remove({id: arg}, function (err, docs) {
         event.sender.send('deleted', docs)
     })
