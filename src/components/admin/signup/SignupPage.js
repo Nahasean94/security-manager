@@ -15,6 +15,4 @@ class SignupPage extends React.Component {
     }
 }
 
-
-// export default connect(null, {userSignupRequest, addFlashMessage, isUserExists})(SignupPage)
 export default SignupPage

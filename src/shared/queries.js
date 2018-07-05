@@ -198,8 +198,8 @@ const login = `
 }
 `
 const signup = `
-   mutation($username:String!,$email:String!,$password:String!,$role:String!) {
-  signup(username:$username,email:$email,password:$password,role:$role) {
+   mutation($username:String!,$email:String!,$password:String!) {
+  signup(username:$username,email:$email,password:$password) {
    id
   }
 }

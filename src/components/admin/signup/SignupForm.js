@@ -1,11 +1,10 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import validator from 'validator'
 import {isEmpty} from 'lodash'
 import TextFieldGroup from '../../../shared/TextFieldsGroup'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {isUserExists, signup} from "../../../shared/queries"
-import classnames from 'classnames'
+import {signup} from "../../../shared/queries"
+
 
 
 class SignupForm extends React.Component {
@@ -24,39 +23,8 @@ class SignupForm extends React.Component {
         }
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
-        this.checkUserExists = this.checkUserExists.bind(this)
     }
 
-    checkUserExists(e) {
-        const field = e.target.name
-        const val = e.target.value
-        if (val !== '') {
-            this.props.graphql
-                .query({
-                    fetchOptionsOverride: fetchOptionsOverride,
-                    resetOnLoad: true,
-                    operation: {
-                        variables: {email: val},
-                        query: isUserExists
-                    }
-                })
-                .request.then(({data}) => {
-                    if (data) {
-                        let errors = this.state.errors
-                        let invalid
-                        if (data.isUserExists.exists) {
-                            invalid = true
-                            errors[field] = 'There is user with such ' + field
-                        } else {
-                            invalid = false
-                            errors[field] = ''
-                        }
-                        this.setState({errors, invalid})
-                    }
-                }
-            )
-        }
-    }
 
     validateInput(data) {
         let errors = {}
@@ -70,9 +38,7 @@ class SignupForm extends React.Component {
         if (!validator.isEmail(data.email)) {
             errors.email = 'This field must be an email'
         }
-        if (validator.isEmpty(data.role)) {
-            errors.role = 'This field is required'
-        }
+
         if (validator.isEmpty(data.password)) {
             errors.password = 'This field is required'
         }
@@ -110,7 +76,6 @@ class SignupForm extends React.Component {
                             username: this.state.username,
                             email: this.state.email,
                             password: this.state.password,
-                            role: this.state.role
                         },
                         query: signup
                     }
@@ -131,7 +96,6 @@ class SignupForm extends React.Component {
                                 ? `You can now use your email and password to log in.`
                                 : `Signup failed.`
                         })
-                        // this.context.router.history.push('/')
                     }
                 }
             )
@@ -169,7 +133,6 @@ class SignupForm extends React.Component {
                     value={this.state.email}
                     onChange={this.onChange}
                     error={errors.email}
-                    checkUserExists={this.checkUserExists}
                 />
                 <TextFieldGroup
                     label="Password"
@@ -196,11 +159,6 @@ class SignupForm extends React.Component {
             </form>
         )
     }
-}
-
-
-SignupForm.contextTypes = {
-    router: PropTypes.object.isRequired
 }
 
 export default SignupForm
