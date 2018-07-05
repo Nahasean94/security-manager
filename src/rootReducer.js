@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux'
-import playlistReducers from "./reducers/guardReducers"
+// import playlistReducers from "./reducers/guardReducers"
 
 export default combineReducers({
-       playlistReducers
+       // playlistReducers
 })

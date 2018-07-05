@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import TextFieldGroup from "./shared/TextFieldsGroup"
+import NavigationBar from "./components/NavigationBar"
 
 
 const {ipcRenderer} = window.require('electron')
@@ -15,30 +16,6 @@ class App extends Component {
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
-        // const guards = [{
-        //     id: 'wewe',
-        //     password: 'wewe',
-        //     first_name:'Sean',
-        //     last_name:'Njenga'
-        //
-        // },
-        //     {
-        //         id: 'sdsd',
-        //         password: 'sdsd',
-        //         first_name:'Kev',
-        //         last_name:'John'
-        //     },
-        //     {
-        //         id: 'ww',
-        //         password: 'ww',
-        //         first_name:'Mike',
-        //         last_name:'Ndathe'
-        //     }]
-        // guards.map(guard => {
-        //     ipcRenderer.send('save-guard', {
-        //         ...guard
-        //     })
-        // })
     }
 
     onChange(e) {
@@ -61,6 +38,8 @@ class App extends Component {
     render() {
         const {guards} = this.state
         return (
+            <div>
+                <NavigationBar/>
             <div className="container-fluid">
                 <div className="row flex-xl-nowrap">
                     <div className="col-2 col-md-2 bd-sidebar">
@@ -105,6 +84,7 @@ class App extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>)
 
     }
