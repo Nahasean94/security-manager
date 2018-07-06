@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const TextFieldGroup = ({ name,value, label, error, type, onChange,checkUserExists}) => {
+const TextFieldGroup = ({ name,value, label, error, type, onChange,checkLocationExists}) => {
     return (
         <div className="form-group row">
             <label className="col-sm-2 col-form-label" >{label}</label>
@@ -11,7 +11,7 @@ const TextFieldGroup = ({ name,value, label, error, type, onChange,checkUserExis
                        className={classnames("form-control form-control-sm", {"is-invalid": error})}
                        value={value}
                        onChange={onChange}
-                       onBlur={checkUserExists}/>
+                       onKeyUp={checkLocationExists}/>
                 {error && <div className="invalid-feedback">{error}</div>}
             </div>
         </div>
@@ -24,7 +24,7 @@ TextFieldGroup.propTypes = {
     error: PropTypes.string,
     type: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    checkUserExists: PropTypes.func
+    checkLocationExists: PropTypes.func
 
 }
 TextFieldGroup.defaultTypes = {

@@ -197,6 +197,14 @@ const login = `
   }
 }
 `
+const addLocation = `
+   mutation($name:String!) {
+  addLocation(name:$name) {
+    id
+    name
+  }
+}
+`
 const signup = `
    mutation($username:String!,$email:String!,$password:String!) {
   signup(username:$username,email:$email,password:$password) {
@@ -204,9 +212,9 @@ const signup = `
   }
 }
 `
-const isUserExists = `
-   mutation($email:String!) {
-  isUserExists(email:$email) {
+const isLocationExists = `
+   mutation($name:String!) {
+  isLocationExists(name:$name) {
    exists
   }
 }
@@ -456,7 +464,7 @@ address
 }`
 
 export {
-    podcasts,
+    addLocation,
     fetchPodcastsByTags,
     podcast,
     hosts,
@@ -467,7 +475,7 @@ export {
     fetchUserProfile,
     getProfileInfo,
     signup,
-    isUserExists,
+    isLocationExists,
     login,
     findPodcastComments,
     likePodcast,
