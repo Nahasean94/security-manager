@@ -30,6 +30,6 @@ body {
     /*background-color: black!important;*/
     /*color: white!important;*/
 /*}*/
-.btn, .form-control, .modal{
+.flat, .btn, .form-control  {
     border-radius: unset;
 }

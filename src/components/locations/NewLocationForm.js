@@ -3,7 +3,7 @@ import validator from 'validator'
 import {isEmpty} from 'lodash'
 import TextFieldGroup from '../../shared/TextFieldsGroup'
 import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
-import {signup} from "../../shared/queries"
+import {addLocation, isLocationExists} from "../../shared/queries"
 import PropTypes from "prop-types"
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 
@@ -25,6 +25,30 @@ class NewLocationForm extends React.Component {
     }
 
     checkLocationExists() {
+        this.props.graphql
+            .query({
+                fetchOptionsOverride: fetchOptionsOverride,
+                resetOnLoad: true,
+                operation: {
+                    variables: {
+                        name: this.state.name,
+                    },
+                    query: isLocationExists
+                }
+            })
+            .request.then(({data}) => {
+
+            if (data) {
+                if (data.isLocationExists.exists) {
+                    let errors = {}
+                    errors.name = 'A location with that name already exists'
+                    this.setState({errors, invalid: true,})
+                }else{
+                    let errors = {}
+                    this.setState({errors, invalid: false,})
+                }
+            }
+        })
 
     }
 
@@ -35,6 +59,7 @@ class NewLocationForm extends React.Component {
         if (validator.isEmpty(data.name)) {
             errors.name = 'This field is required'
         }
+
 
         return {
             errors,
@@ -62,7 +87,7 @@ class NewLocationForm extends React.Component {
                         variables: {
                             name: this.state.name,
                         },
-                        query: signup
+                        query: addLocation
                     }
                 })
                 .request.then(({data}) => {
@@ -74,9 +99,12 @@ class NewLocationForm extends React.Component {
                             isLoading: false,
                             invalid: false,
                             loading: false,
-                            message: data
-                                ? `You can now use your email and password to log in.`
-                                : `Signup failed.`
+                            message: data.addLocation
+                                ? <div className="alert alert-success" role="alert">Successfully added location
+                                    "{data.addLocation.name}"
+                                </div>
+                                : <div className="alert alert-danger" role="alert">An error occurred while adding location
+                                </div>
                         })
                     }
                 }
@@ -95,16 +123,15 @@ class NewLocationForm extends React.Component {
         if (loading) {
             return <p>Adding a new location</p>
         }
-        if (message) {
-            return <div className="alert alert-success" role="alert">
-                {message}
-            </div>
-        }
+
         if (show) {
             return (
-                <Modal isOpen={show} toggle={onClose} size="lg">
+                <Modal isOpen={show} toggle={onClose} size="lg" className="modal-dialog modal-dialog-centered">
                     <ModalHeader toggle={onClose}>Add a new location</ModalHeader>
                     <ModalBody>
+                        {message ? <div>
+                            {message}
+                        </div> : ""}
                         <form onSubmit={this.onSubmit}>
                             <TextFieldGroup
                                 label="Name"
@@ -113,8 +140,8 @@ class NewLocationForm extends React.Component {
                                 value={this.state.name} autoFocus={true}
                                 onChange={this.onChange}
                                 error={errors.name}
+                                checkLocationExists={this.checkLocationExists}
                             />
-
                             <div className="form-group row">
                                 <div className="col-sm-4 offset-sm-4">
                                     <button disabled={isLoading || invalid} className="btn btn-dark btn-sm form-control"
