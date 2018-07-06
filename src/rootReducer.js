@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux'
-// import playlistReducers from "./reducers/guardReducers"
+import loginReducers from "./reducers/loginReducers"
 
 export default combineReducers({
-       // playlistReducers
+    loginReducers
 })

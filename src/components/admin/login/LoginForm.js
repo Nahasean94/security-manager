@@ -74,7 +74,7 @@ class LoginForm extends React.Component {
                     }
                     else {
                         this.props.setLoginToken(data.login.token)
-                        this.context.router.history.push('/')
+                        this.context.router.history.push('/admin')
                         this.setState({
                             loading: false,
                             message: data

@@ -13,8 +13,8 @@ import registerServiceWorker from './registerServiceWorker'
 const store = createStore(rootReducer, compose(applyMiddleware(thunk)))
 
 
-if (localStorage.getItem('Fundcast')) {
-    store.dispatch(setCurrentUser(jwt.decode(localStorage.getItem('Fundcast'))))
+if (localStorage.getItem('SecurityManager')) {
+    store.dispatch(setCurrentUser(jwt.decode(localStorage.getItem('SecurityManager'))))
 }
 
 

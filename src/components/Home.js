@@ -37,7 +37,7 @@ class Home extends Component {
     render() {
         const {guards} = this.state
         return (
-            <div id="body">
+            <div >
                 <div className="container-fluid">
                     <div className="row flex-xl-nowrap">
                         <div className="col-2 col-md-2 bd-sidebar">

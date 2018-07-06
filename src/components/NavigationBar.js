@@ -1,9 +1,10 @@
 import React from 'react'
 import SigninPage from './admin/SigninPage'
-import PropTypes from 'prop-types'
+
 
 import {Consumer} from "graphql-react"
 import jwt from "jsonwebtoken"
+import {Link} from "react-router-dom"
 
 class NavigationBar extends React.Component {
     constructor(props) {
@@ -43,9 +44,8 @@ class NavigationBar extends React.Component {
         }
 
         const userLinks = (<div className="navbar-nav flex-row ml-md-auto">
-            {token && token.role === 'host' }
-            <a href="/logout" className="nav-item nav-link" onClick={this.logout}>Logout </a>
-            {token && <a href="" className="nav-item nav-link">{token.username}</a>}
+            <a className="nav-item nav-link" onClick={this.logout}>Logout </a>
+            {token && <Link to="/admin" className="nav-item nav-link">Dashboard</Link>}
 
         </div>)
 
@@ -56,9 +56,9 @@ class NavigationBar extends React.Component {
 
         return (
             <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top">
-                <a className="navbar-brand" href="/">
+                <Link className="navbar-brand" to="/">
                     Security Manager
-                </a>
+                </Link>
                 {/*<button className="navbar-toggler" type="button" data-toggle="collapse"*/}
                         {/*data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"*/}
                         {/*aria-expanded="false" aria-label="Toggle navigation">*/}
