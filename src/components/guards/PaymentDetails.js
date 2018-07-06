@@ -9,9 +9,12 @@ class PersonalDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: '',
-            cellphone: '',
-            postal_address: '',
+            gross: '',
+            paye: '',
+            nssf: '',
+            nhif: '',
+            loans: '',
+            others: '',
             errors: {},
             isLoading: false,
             invalid: false
@@ -25,11 +28,8 @@ class PersonalDetails extends Component {
     validateInput(data) {
         let errors = {}
 
-        if (validator.isEmpty(data.postal_address)) {
-            errors.postal_address = 'This field is required'
-        }
-        if (validator.isEmpty(data.cellphone)) {
-            errors.last_name = 'This field is required'
+        if (validator.isEmpty(data.gross)) {
+            errors.gross = 'This field is required'
         }
         return {
             errors,
@@ -54,9 +54,12 @@ class PersonalDetails extends Component {
                     this.props.onClose()
                     this.props.addGuard(teacher.data)
                     this.setState({
-                        email: '',
-                        cellphone: '',
-                        postal_address: '',
+                        gross: '',
+                        paye: '',
+                        nssf: '',
+                        nhif: '',
+                        loans: '',
+                        others: '',
                         errors: {},
                         isLoading: false,
                         invalid: false
@@ -74,7 +77,7 @@ class PersonalDetails extends Component {
     render() {
         const {show, onClose} = this.props
 
-        const {errors, isLoading, invalid, email, cellphone, postal_address,} = this.state
+        const {errors, isLoading, invalid, loans, paye, gross, nssf, nhif, others,} = this.state
         const err = () => {
             for (let prop in errors) {
                 if (errors.hasOwnProperty(prop)) {
@@ -89,42 +92,49 @@ class PersonalDetails extends Component {
                 <Modal isOpen={show} toggle={onClose} size="lg">
                     <ModalHeader toggle={onClose}>Personal details</ModalHeader>
                     <ModalBody>
-                        <TextFieldGroup
-                            label="Email"
-                            type="text"
-                            name="email"
-                            value={email}
-                            onChange={this.onChange}
-                            error={errors.email}
-                            disabled={true}
-                        />
                         <form onSubmit={this.onSubmit}>
                             <TextFieldGroup
-                                label="Phone number"
+                                label="Gross Salary"
                                 type="number"
-                                name="cellphone"
-                                value={cellphone}
+                                name="gross"
+                                value={gross}
                                 onChange={this.onChange}
-                                error={errors.cellphone}
-                                disabled={true}
+                                error={errors.gross}
                             />
                             <TextFieldGroup
-                                label="Postal address"
-                                type="text"
-                                name="postal_address"
-                                value={postal_address}
+                                label="PAYE"
+                                type="number"
+                                name="paye"
+                                value={paye}
                                 onChange={this.onChange}
-                                error={errors.postal_address}
-                                disabled={true}
+                                error={errors.paye}
                             />
+                            <TextFieldGroup
+                                label="NHIF"
+                                type="number"
+                                name="nhif"
+                                value={nhif}
+                                onChange={this.onChange}
+                                error={errors.nhif}
+                            />
+                            <TextFieldGroup
+                                label="NSSF"
+                                type="number"
+                                name="nssf"
+                                value={nssf}
+                                onChange={this.onChange}
+                                error={errors.nssf}
+                            />
+
                             <div className="form-group row">
                                 <div className="col-sm-4 offset-sm-2">
-                                    <button disabled={isLoading || invalid} className="btn btn-secondary btn-sm form-control" >Back
+                                    <button disabled={isLoading || invalid}
+                                            className="btn btn-secondary btn-sm form-control">Back
                                     </button>
                                 </div>
                                 <div className="col-sm-4">
                                     <button disabled={isLoading || invalid} className="btn btn-dark btn-sm form-control"
-                                            onClick={this.props.showPaymentDetailsModal}>Next
+                                            type="submit">Next
                                     </button>
                                 </div>
                             </div>
@@ -145,8 +155,6 @@ class PersonalDetails extends Component {
 PersonalDetails.propTypes = {
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    showPaymentDetailsModal: PropTypes.func.isRequired,
-    closePaymentDetailsModal: PropTypes.func.isRequired,
 
 }
 PersonalDetails.contextTypes = {

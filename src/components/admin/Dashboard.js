@@ -1,19 +1,72 @@
 import React from 'react'
+import PersonalDetails from "../guards/PersonalDetails"
+import ContactAndPaymentDetails from "../guards/ContactAndPaymentDetails"
+import PaymentDetails from "../guards/PaymentDetails"
 
-class Dashboard extends React.Component{
+class Dashboard extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showPersonalDetailsModal: false,
+            showContactAndPaymentDetailsModal: false,
+            showPaymentDetailsModal: false,
+        }
+        this.showPersonalDetailsModal = this.showPersonalDetailsModal.bind(this)
+        this.closePersonalDetailsModal = this.closePersonalDetailsModal.bind(this)
+        this.showContactAndPaymentDetailsModal = this.showContactAndPaymentDetailsModal.bind(this)
+        this.showContactAndPaymentDetailsModal = this.showContactAndPaymentDetailsModal.bind(this)
+        this.closeContactAndPaymentDetailsModal = this.closeContactAndPaymentDetailsModal.bind(this)
+        this.showPaymentDetailsModal = this.showPaymentDetailsModal.bind(this)
+        this.closePaymentDetailsModal = this.closePaymentDetailsModal.bind(this)
+    }
 
-    render(){
+    showPersonalDetailsModal(e) {
+        e.preventDefault()
+        this.setState({showPersonalDetailsModal: true})
+    }
 
-        return(
+    closePersonalDetailsModal() {
+        this.setState({showPersonalDetailsModal: false})
+    }
+
+    showContactAndPaymentDetailsModal(e) {
+        e.preventDefault()
+        this.setState({showContactAndPaymentDetailsModal: true})
+        this.closePersonalDetailsModal()
+    }
+
+    closeContactAndPaymentDetailsModal() {
+        this.setState({showContactAndPaymentDetailsModal: false})
+    }
+
+    showPaymentDetailsModal(e) {
+        e.preventDefault()
+        this.setState({showPaymentDetailsModal: true})
+        this.closeContactAndPaymentDetailsModal()
+    }
+
+    closePaymentDetailsModal() {
+        this.setState({showPaymentDetailsModal: false})
+    }
+
+    render() {
+        const {showPersonalDetailsModal, showContactAndPaymentDetailsModal,showPaymentDetailsModal} = this.state
+
+        return (
             <div>
-                TIME IS RUNNING OUT TO CLAIM THIS FREE EBOOK 22:50:12
-                Mastering Docker - Second Edition
-                Unlock new opportunities using Docker's most advanced features.
-                Experience first- and third-party tools such as Docker Compose, Docker Machine, Portainer, and Rancher
-                Learn how to leverage Kubernetes, Amazon ECS, and Docker Swarm and know when each solution is appropriate
-                Discover how Docker can be integrated into your daily workflows
-
-</div>
+                <button className="btn btn-sm btn-secondary" onClick={this.showPersonalDetailsModal}>new guard</button>
+                <br/>
+                <br/>
+                <button className="btn btn-sm btn-secondary">new location</button>
+                <PersonalDetails show={showPersonalDetailsModal} onClose={this.closePersonalDetailsModal}
+                                 showContactAndPaymentDetailsModal={this.showContactAndPaymentDetailsModal}
+                                 closeContactAndPaymentDetailsModal={this.closeContactAndPaymentDetailsModal}/>
+                <ContactAndPaymentDetails show={showContactAndPaymentDetailsModal}
+                                          onClose={this.closeContactAndPaymentDetailsModal} showPaymentDetailsModal={this.showPaymentDetailsModal}
+                                          closePaymentDetailsModal={this.closePaymentDetailsModal}/>
+                <PaymentDetails show={showPaymentDetailsModal}
+                                onClose={this.closePaymentDetailsModal}/>
+            </div>
         )
     }
 }
