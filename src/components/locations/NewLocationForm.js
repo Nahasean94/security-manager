@@ -1,20 +1,18 @@
 import React from 'react'
 import validator from 'validator'
 import {isEmpty} from 'lodash'
-import TextFieldGroup from '../../../shared/TextFieldsGroup'
-import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {signup} from "../../../shared/queries"
+import TextFieldGroup from '../../shared/TextFieldsGroup'
+import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
+import {signup} from "../../shared/queries"
+import PropTypes from "prop-types"
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 
 
-
-class SignupForm extends React.Component {
+class NewLocationForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            username: '',
-            email: '',
-            password: '',
-            passwordConfirmation: '',
+            name: '',
             errors: {},
             isLoading: false,
             invalid: false,
@@ -23,30 +21,19 @@ class SignupForm extends React.Component {
         }
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+        this.checkLocationExists = this.checkLocationExists.bind(this)
+    }
+
+    checkLocationExists() {
+
     }
 
 
     validateInput(data) {
         let errors = {}
 
-        if (validator.isEmpty(data.username)) {
-            errors.username = 'This field is required'
-        }
-        if (validator.isEmpty(data.email)) {
-            errors.email = 'This field is required'
-        }
-        if (!validator.isEmail(data.email)) {
-            errors.email = 'This field must be an email'
-        }
-
-        if (validator.isEmpty(data.password)) {
-            errors.password = 'This field is required'
-        }
-        if (validator.isEmpty(data.passwordConfirmation)) {
-            errors.passwordConfirmation = 'This field is required'
-        }
-        if (!validator.equals(data.password, data.passwordConfirmation)) {
-            errors.passwordConfirmation = 'Passwords must match'
+        if (validator.isEmpty(data.name)) {
+            errors.name = 'This field is required'
         }
 
         return {
@@ -73,21 +60,16 @@ class SignupForm extends React.Component {
                     resetOnLoad: true,
                     operation: {
                         variables: {
-                            username: this.state.username,
-                            email: this.state.email,
-                            password: this.state.password,
+                            name: this.state.name,
                         },
                         query: signup
                     }
                 })
                 .request.then(({data}) => {
+
                     if (data) {
                         this.setState({
-                            username: '',
-                            email: '',
-                            password: '',
-                            passwordConfirmation: '',
-                            role: '',
+                            name: '',
                             errors: {},
                             isLoading: false,
                             invalid: false,
@@ -107,58 +89,54 @@ class SignupForm extends React.Component {
     }
 
     render() {
-        const {errors, loading, message} = this.state
+        const {show, onClose} = this.props
+
+        const {errors, loading, message, isLoading, invalid} = this.state
         if (loading) {
-            return <p>Creating account…</p>
+            return <p>Adding a new location</p>
         }
         if (message) {
-            return <p>{message}</p>
+            return <div className="alert alert-success" role="alert">
+                {message}
+            </div>
         }
-        return (
-            <form onSubmit={this.onSubmit}>
-                <h3>Create an admin account</h3>
+        if (show) {
+            return (
+                <Modal isOpen={show} toggle={onClose} size="lg">
+                    <ModalHeader toggle={onClose}>Add a new location</ModalHeader>
+                    <ModalBody>
+                        <form onSubmit={this.onSubmit}>
+                            <TextFieldGroup
+                                label="Name"
+                                type="name"
+                                name="name"
+                                value={this.state.name} autoFocus={true}
+                                onChange={this.onChange}
+                                error={errors.name}
+                            />
 
-                <TextFieldGroup
-                    label="Username"
-                    type="username"
-                    name="username"
-                    value={this.state.username} autoFocus={true}
-                    onChange={this.onChange}
-                    error={errors.username}
-                />
-                <TextFieldGroup
-                    label="Email"
-                    type="email"
-                    name="email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                    error={errors.email}
-                />
-                <TextFieldGroup
-                    label="Password"
-                    type="password"
-                    name="password"
-                    value={this.state.password}
-                    onChange={this.onChange}
-                    error={errors.password}
-                />
-                <TextFieldGroup
-                    label="Confirm Password "
-                    type="password"
-                    name="passwordConfirmation"
-                    value={this.state.passwordConfirmation}
-                    onChange={this.onChange}
-                    error={errors.passwordConfirmation}
-                />
-
-                <div className="form-group">
-                    <button disabled={this.state.isLoading || this.state.invalid} className="btn btn-primary btn-sm"
-                            type="submit">Sign up
-                    </button>
-                </div>
-            </form>
-        )
+                            <div className="form-group row">
+                                <div className="col-sm-4 offset-sm-4">
+                                    <button disabled={isLoading || invalid} className="btn btn-dark btn-sm form-control"
+                                            type="submit">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={onClose}>Cancel</Button>{' '}
+                    </ModalFooter>
+                </Modal>
+            )
+        }
+        else return null
     }
+
 }
 
-export default SignupForm
+NewLocationForm.propTypes = {
+    show: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+}
+export default NewLocationForm
