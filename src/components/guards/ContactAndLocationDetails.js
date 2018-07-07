@@ -4,22 +4,33 @@ import TextFieldGroup from "../../shared/TextFieldsGroup"
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import validator from 'validator'
 import {isEmpty} from 'lodash'
+import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
+import {locations} from "../../shared/queries"
+import {Query} from "graphql-react"
+import Select from 'react-select'
 
-class PersonalDetails extends Component {
+
+let locationOptions
+class ContactAndLocationDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
             email: '',
             cellphone: '',
             postal_address: '',
+            location: '',
             errors: {},
             isLoading: false,
             invalid: false
 
         }
         this.onChange = this.onChange.bind(this)
+        this.handleLocationChange = this.handleLocationChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
 
+    }
+    handleLocationChange = (location) => {
+        this.setState({location})
     }
 
     validateInput(data) {
@@ -75,20 +86,14 @@ class PersonalDetails extends Component {
         const {show, onClose} = this.props
 
         const {errors, isLoading, invalid, email, cellphone, postal_address,} = this.state
-        const err = () => {
-            for (let prop in errors) {
-                if (errors.hasOwnProperty(prop)) {
-                    return (<div className="alert alert-danger" role="alert">
-                        {errors[prop]}
-                    </div>)
-                }
-            }
-        }
         if (show) {
             return (
                 <Modal isOpen={show} toggle={onClose} size="lg">
-                    <ModalHeader toggle={onClose}>Personal details</ModalHeader>
+                    <ModalHeader toggle={onClose}>Contact details</ModalHeader>
                     <ModalBody>
+                        <div className="alert alert-success" role="alert">
+                            {this.props.message}
+                        </div>
                         <TextFieldGroup
                             label="Email"
                             type="text"
@@ -109,7 +114,7 @@ class PersonalDetails extends Component {
                                 disabled={true}
                             />
                             <TextFieldGroup
-                                label="Postal address"
+                                label="Postal address (P.O Box)"
                                 type="text"
                                 name="postal_address"
                                 value={postal_address}
@@ -118,8 +123,43 @@ class PersonalDetails extends Component {
                                 disabled={true}
                             />
                             <div className="form-group row">
+                                <label className="col-sm-3 col-form-label" htmlFor="hosts">Location deployed</label>
+                                <div className="col-sm-9">
+                                    <Query
+                                        loadOnMount
+                                        loadOnReset
+                                        fetchOptionsOverride={fetchOptionsOverride}
+                                        query={locations}
+                                    >
+                                        {({loading, data}) => {
+                                            if (data) {
+                                                locationOptions = data.locations.map(location => {
+                                                    return {
+                                                        label: location.name,
+                                                        value: location.name
+                                                    }
+                                                })
+                                                return <Select.Creatable
+                                                    closeOnSelect={true}
+                                                    onChange={this.handleLocationChange}
+                                                    options={locationOptions}
+                                                    placeholder="Search locations"
+                                                    removeSelected={true}
+                                                    value={this.state.location}/>
+                                            }
+                                            else if (loading) {
+                                                return <p>Loading…</p>
+                                            }
+                                            return <p>Loading failed.</p>
+                                        }
+                                        }
+                                    </Query>
+                                </div>
+                            </div>
+                            <div className="form-group row">
                                 <div className="col-sm-4 offset-sm-2">
-                                    <button disabled={isLoading || invalid} className="btn btn-secondary btn-sm form-control" >Back
+                                    <button disabled={isLoading || invalid}
+                                            className="btn btn-secondary btn-sm form-control">Back
                                     </button>
                                 </div>
                                 <div className="col-sm-4">
@@ -142,16 +182,17 @@ class PersonalDetails extends Component {
 }
 
 
-PersonalDetails.propTypes = {
+ContactAndLocationDetails.propTypes = {
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
+    message: PropTypes.string.isRequired,
     showPaymentDetailsModal: PropTypes.func.isRequired,
     closePaymentDetailsModal: PropTypes.func.isRequired,
 
 }
-PersonalDetails.contextTypes = {
-    router: PropTypes.object.isRequired
+// ContactAndLocationDetails.contextTypes = {
+//     router: PropTypes.object.isRequired
+//
+// }
 
-}
-
-export default PersonalDetails
+export default ContactAndLocationDetails

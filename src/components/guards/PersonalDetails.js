@@ -4,12 +4,14 @@ import TextFieldGroup from "../../shared/TextFieldsGroup"
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import validator from 'validator'
 import {isEmpty} from 'lodash'
+import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
+import {registerGuardPersonalDetails} from '../../shared/queries'
 
 class PersonalDetails extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            employee_id: '',
+            guard_id: '',
             surname: '',
             first_name: '',
             last_name: '',
@@ -17,6 +19,9 @@ class PersonalDetails extends Component {
             gender: '',
             nationalID: '',
             employment_date: '',
+            password:'',
+            passwordConfirmation:'',
+            message:'',
             errors: {},
             isLoading: false,
             invalid: false
@@ -30,10 +35,9 @@ class PersonalDetails extends Component {
 
     validateInput(data) {
         let errors = {}
-        if (!data.employee_id) {
-            errors.employee_id = 'This field is required'
+        if (!data.guard_id) {
+            errors.guard_id = 'This field is required'
         }
-
         if (validator.isEmpty(data.first_name)) {
             errors.first_name = 'This field is required'
         }
@@ -43,12 +47,20 @@ class PersonalDetails extends Component {
         if (validator.isEmpty(data.gender)) {
             errors.gender = 'This field is required'
         }
-
         if (validator.isEmpty(data.dob)) {
             errors.dob = 'This field is required'
         }
         if (validator.isEmpty(data.nationalID)) {
             errors.dob = 'This field is required'
+        }
+        if (validator.isEmpty(data.password)) {
+            errors.password = 'This field is required'
+        }
+        if (validator.isEmpty(data.passwordConfirmation)) {
+            errors.passwordConfirmation = 'This field is required'
+        }
+        if (!validator.equals(data.password, data.passwordConfirmation)) {
+            errors.passwordConfirmation = 'Passwords must match'
         }
         if (Date.parse(data.dob) > Date.parse(new Date('2000'))) {
             errors.dob = "A teacher must be 18 and above"
@@ -83,26 +95,49 @@ class PersonalDetails extends Component {
         e.preventDefault()
         if (this.isValid() || !this.state.invalid) {
             this.setState({errors: {}, isLoading: true})
-            this.props.registerGuard(this.state).then(
-                (teacher) => {
-                    this.props.onClose()
-                    this.props.addGuard(teacher.data)
-                    this.setState({
-                        employee_id: '',
-                        surname: '',
-                        first_name: '',
-                        last_name: '',
-                        dob: '',
-                        gender: '',
-                        nationalID: '',
-                        employment_date: '',
-                        errors: {},
-                        isLoading: false,
-                        invalid: false
-                    })
-                },
-                err => this.setState({errors: err.response.data, isLoading: false})
-            )
+                    this.props.graphql
+                        .query({
+                            fetchOptionsOverride: fetchOptionsOverride,
+                            resetOnLoad: true,
+                            operation: {
+                                variables: {
+                                    guard_id:this.state.guard_id,
+                                    surname:this.state.surname,
+                                    first_name:this.state.first_name,
+                                    last_name:this.state.last_name,
+                                    dob:this.state.dob,
+                                    gender:this.state.gender,
+                                    password:this.state.password,
+                                    nationalID:this.state.nationalID,
+                                    employment_date:this.state.guard_id,
+                                },
+                                query: registerGuardPersonalDetails
+                            }
+                        })
+                        .request.then(({data}) => {
+                            if (data) {
+                                this.setState({
+                                    guard_id: '',
+                                    surname: '',
+                                    first_name: '',
+                                    last_name: '',
+                                    dob: '',
+                                    gender: '',
+                                    password:'',
+                                    passwordConfirmation:'',
+                                    nationalID: '',
+                                    employment_date: '',
+                                    errors: {},
+                                    isLoading: false,
+                                    invalid: false,
+                                     message: data.registerGuardPersonalDetails
+                                        ? this.setState({message:'Personal Details successfully added'})
+                                        : this.setState({message:'Registration Failed'})
+                                })
+                                this.props.showContactAndPaymentDetailsModal()
+                            }
+                        }
+                    )
         }
     }
 
@@ -113,7 +148,7 @@ class PersonalDetails extends Component {
     render() {
         const {show, onClose} = this.props
 
-        const {errors, isLoading, invalid, employee_id, surname, first_name, last_name, dob, gender, nationalID, employment_date} = this.state
+        const {errors, isLoading, invalid, guard_id, surname, first_name, last_name, dob, gender, nationalID, employment_date,password,passwordConfirmation} = this.state
         const err = () => {
             for (let prop in errors) {
                 if (errors.hasOwnProperty(prop)) {
@@ -132,11 +167,11 @@ class PersonalDetails extends Component {
                         <form onSubmit={this.onSubmit}>
                             <TextFieldGroup
                                 label="Guard ID"
-                                type="text"
-                                name="employee_id"
-                                value={employee_id}
+                                type="number"
+                                name="guard_id"
+                                value={guard_id}
                                 onChange={this.onChange}
-                                error={errors.employee_id}
+                                error={errors.guard_id}
                                 disabled={true}
 
                             />
@@ -170,10 +205,27 @@ class PersonalDetails extends Component {
                                 disabled={true}
                             />
                             <TextFieldGroup
+                                label="Password"
+                                type="password"
+                                name="password"
+                                value={password}
+                                onChange={this.onChange}
+                                error={errors.password}
+                            />
+                            <TextFieldGroup
+                                label="Confirm Password "
+                                type="password"
+                                name="passwordConfirmation"
+                                value={passwordConfirmation}
+                                onChange={this.onChange}
+                                error={errors.passwordConfirmation}
+                            />
+
+                            <TextFieldGroup
                                 label="Date of birth"
-                                type="text"
+                                type="date"
                                 name="dob"
-                                value={new Date(dob).toDateString()}
+                                value={dob}
                                 onChange={this.onChange}
                                 error={errors.dob}
                                 disabled={true}
@@ -192,9 +244,9 @@ class PersonalDetails extends Component {
 
                             <TextFieldGroup
                                 label="Date of Employment"
-                                type="text"
+                                type="date"
                                 name="employment_date"
-                                value={new Date(employment_date).toDateString()}
+                                value={employment_date}
                                 onChange={this.onChange}
                                 error={errors.employment_date}
                                 disabled={true}
@@ -212,8 +264,7 @@ class PersonalDetails extends Component {
                             </div>
                             <div className="form-group row">
                                 <div className="col-sm-4 offset-sm-4">
-                                    <button disabled={isLoading || invalid} className="btn btn-dark btn-sm form-control"
-                                            onClick={this.props.showContactAndPaymentDetailsModal}>Next
+                                    <button disabled={isLoading || invalid} className="btn btn-dark btn-sm form-control" type="submit">Next
                                     </button>
                                 </div>
                             </div>
@@ -241,7 +292,6 @@ PersonalDetails.propTypes = {
 }
 PersonalDetails.contextTypes = {
     router: PropTypes.object.isRequired
-
 }
 
 export default PersonalDetails

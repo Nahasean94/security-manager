@@ -4,7 +4,7 @@ const podcasts = `
         id
 title
 description
-tags
+locations
 listens
 hosts{
 id
@@ -33,7 +33,7 @@ const fetchPodcastsByTags = `
         id
 title
 description
-tags
+locations
 listens
 hosts{
 id
@@ -62,7 +62,7 @@ const podcast = `
         id
 title
 description
-tags
+locations
 listens
 hosts{
 id
@@ -151,7 +151,7 @@ const fetchHostPodcasts = `
   id
 title
 description
-tags
+locations
 listens
 hosts{
 id
@@ -212,6 +212,13 @@ const signup = `
   }
 }
 `
+const registerGuardPersonalDetails = `
+mutation($guard_id:Int!,$surname:String!,$first_name:String!,$last_name:String!,$dob:String!,$gender:String!,$password:String!,$nationalID:Int!,$employment_date:String!) {
+    registerGuardPersonalDetails(guard_id:$guard_id,surname:$surname,first_name:$first_name,last_name:$last_name,dob:$dob,gender:$gender,password:$password,nationalID:$nationalID,employment_date:$employment_date) {
+        id
+    }
+}
+`
 const isLocationExists = `
    mutation($name:String!) {
   isLocationExists(name:$name) {
@@ -232,7 +239,7 @@ const likePodcast = `
      id
 title
 description
-tags
+locations
 listens
 hosts{
 id
@@ -264,7 +271,7 @@ const unlikePodcast = `
    id
 title
 description
-tags
+locations
 listens
 hosts{
 id
@@ -412,8 +419,8 @@ const uploadFile = `
 }
 `
 const createNewPodcast = `
-   mutation($title:String!,$description:String!,$hosts:[String!]!,$paid:Int!,$tags:[String!]!,$coverImage:Upload!,$podcast:Upload!) {
-  newPodcast(title:$title,description:$description,hosts:$hosts,paid:$paid,tags:$tags,coverImage:$coverImage,podcast:$podcast) {
+   mutation($title:String!,$description:String!,$hosts:[String!]!,$paid:Int!,$locations:[String!]!,$coverImage:Upload!,$podcast:Upload!) {
+  newPodcast(title:$title,description:$description,hosts:$hosts,paid:$paid,locations:$locations,coverImage:$coverImage,podcast:$podcast) {
  title
  description
  hosts{
@@ -422,15 +429,15 @@ const createNewPodcast = `
  payment{
  id
  }
- tags
+ locations
 
  timestamp
   }
 }
 `
-const tags=`
+const locations=`
 {
-tags{
+locations{
 id
 name
 }
@@ -468,8 +475,9 @@ export {
     fetchPodcastsByTags,
     podcast,
     hosts,
-    tags,
+    locations,
     searchHosts,
+    registerGuardPersonalDetails,
     fetchProfilePodcasts,
     fetchHostPodcasts,
     fetchUserProfile,

@@ -1,6 +1,6 @@
 import React from 'react'
 import PersonalDetails from "../guards/PersonalDetails"
-import ContactAndPaymentDetails from "../guards/ContactAndPaymentDetails"
+import ContactAndLocationDetails from "../guards/ContactAndLocationDetails"
 import PaymentDetails from "../guards/PaymentDetails"
 import NewLocationForm from "../locations/NewLocationForm"
 import {Consumer} from "graphql-react"
@@ -25,8 +25,8 @@ class Dashboard extends React.Component {
         this.closeNewLocationFormModal = this.closeNewLocationFormModal.bind(this)
     }
 
-    showPersonalDetailsModal(e) {
-        e.preventDefault()
+    showPersonalDetailsModal() {
+
         this.setState({showPersonalDetailsModal: true})
     }
 
@@ -34,8 +34,8 @@ class Dashboard extends React.Component {
         this.setState({showPersonalDetailsModal: false})
     }
 
-    showContactAndPaymentDetailsModal(e) {
-        e.preventDefault()
+    showContactAndPaymentDetailsModal() {
+
         this.setState({showContactAndPaymentDetailsModal: true})
         this.closePersonalDetailsModal()
     }
@@ -44,8 +44,8 @@ class Dashboard extends React.Component {
         this.setState({showContactAndPaymentDetailsModal: false})
     }
 
-    showPaymentDetailsModal(e) {
-        e.preventDefault()
+    showPaymentDetailsModal() {
+
         this.setState({showPaymentDetailsModal: true})
         this.closeContactAndPaymentDetailsModal()
     }
@@ -54,8 +54,8 @@ class Dashboard extends React.Component {
         this.setState({showPaymentDetailsModal: false})
     }
 
-    showNewLocationFormModal(e) {
-        e.preventDefault()
+    showNewLocationFormModal() {
+
         this.setState({showNewLocationFormModal: true})
 
     }
@@ -65,23 +65,26 @@ class Dashboard extends React.Component {
     }
 
     render() {
-        const {showPersonalDetailsModal, showContactAndPaymentDetailsModal, showPaymentDetailsModal,showNewLocationFormModal} = this.state
+        const {showPersonalDetailsModal, showContactAndPaymentDetailsModal, showPaymentDetailsModal, showNewLocationFormModal} = this.state
 
         return (
             <div>
                 <button className="btn btn-sm btn-secondary" onClick={this.showPersonalDetailsModal}>new guard</button>
                 <br/>
                 <br/>
-                <button className="btn btn-sm btn-secondary" onClick={this.showNewLocationFormModal}>new location</button>
-                <PersonalDetails show={showPersonalDetailsModal} onClose={this.closePersonalDetailsModal}
-                                 showContactAndPaymentDetailsModal={this.showContactAndPaymentDetailsModal}
-                                 closeContactAndPaymentDetailsModal={this.closeContactAndPaymentDetailsModal}/>
-                <ContactAndPaymentDetails show={showContactAndPaymentDetailsModal}
-                                          onClose={this.closeContactAndPaymentDetailsModal}
-                                          showPaymentDetailsModal={this.showPaymentDetailsModal}
-                                          closePaymentDetailsModal={this.closePaymentDetailsModal}/>
-                <PaymentDetails show={showPaymentDetailsModal}
-                                onClose={this.closePaymentDetailsModal}/>
+                <button className="btn btn-sm btn-secondary" onClick={this.showNewLocationFormModal}>new location
+                </button>
+                <Consumer>{graphql => <PersonalDetails graphql={graphql} show={showPersonalDetailsModal}
+                                                       onClose={this.closePersonalDetailsModal}
+                                                       showContactAndPaymentDetailsModal={this.showContactAndPaymentDetailsModal}
+                                                       closeContactAndPaymentDetailsModal={this.closeContactAndPaymentDetailsModal}/>}</Consumer>
+                <Consumer>{graphql => <ContactAndLocationDetails graphql={graphql}
+                                                                show={true} message="Successfully added personal details"
+                                                                onClose={this.closeContactAndPaymentDetailsModal}
+                                                                showPaymentDetailsModal={this.showPaymentDetailsModal}
+                                                                closePaymentDetailsModal={this.closePaymentDetailsModal}/>}</Consumer>
+                <Consumer>{graphql => <PaymentDetails graphql={graphql} show={showPaymentDetailsModal}
+                                                      onClose={this.closePaymentDetailsModal}/>}</Consumer>
                 <Consumer>{graphql => <NewLocationForm graphql={graphql} show={showNewLocationFormModal}
                                                        onClose={this.closeNewLocationFormModal}/>}</Consumer>
             </div>
