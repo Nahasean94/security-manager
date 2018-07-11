@@ -12,7 +12,7 @@ import Select from 'react-select'
 
 let locationOptions
 
-class PersonalDetails extends Component {
+class NewGuard extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -550,14 +550,12 @@ class PersonalDetails extends Component {
 }
 
 
-PersonalDetails.propTypes = {
+NewGuard.propTypes = {
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    showContactAndPaymentDetailsModal: PropTypes.func.isRequired,
-    closeContactAndPaymentDetailsModal: PropTypes.func.isRequired,
 }
-PersonalDetails.contextTypes = {
+NewGuard.contextTypes = {
     router: PropTypes.object.isRequired
 }
 
-export default PersonalDetails
+export default NewGuard
