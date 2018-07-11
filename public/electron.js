@@ -1,4 +1,4 @@
-const electron = require('electron')
+const electron =require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const ipc = require('electron').ipcMain
@@ -47,7 +47,7 @@ ipc.on('save-guard', (event, arg) => {
     })
 })
 ipc.on('get-guard', (event, arg) => {
-    db.findOne({id: arg.id,password:arg.password}).sort({id: 1}).exec((err, docs) => {
+    db.findOne({id: arg.id, password: arg.password}).sort({id: 1}).exec((err, docs) => {
         event.sender.send('got-guard', docs)
     })
 })

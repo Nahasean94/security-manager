@@ -212,9 +212,9 @@ const signup = `
   }
 }
 `
-const registerGuardPersonalDetails = `
-mutation($guard_id:Int!,$surname:String!,$first_name:String!,$last_name:String!,$dob:String!,$gender:String!,$password:String!,$nationalID:Int!,$employment_date:String!) {
-    registerGuardPersonalDetails(guard_id:$guard_id,surname:$surname,first_name:$first_name,last_name:$last_name,dob:$dob,gender:$gender,password:$password,nationalID:$nationalID,employment_date:$employment_date) {
+const registerGuard = `
+   mutation($guard_id:Int!,$surname:String,$first_name:String!,$last_name:String!, $dob:String!,$gender:String!,$nationalID:Int!,$employment_date:String!, $password:String!,$email:String!,$cellphone:Int!,$postal_address:String, $location:ID!,$gross:Int!,$paye:Int,$nssf:Int,$nhif:Int,$loans:Int, $others:Int){          
+  registerGuard(guard_id:$guard_id,surname:$surname,first_name:$first_name,last_name:$last_name, dob:$dob,gender:$gender,nationalID:$nationalID,employment_date:$employment_date, password:$password,email:$email,cellphone:$cellphone,postal_address:$postal_address, location:$location,gross:$gross,paye:$paye,nssf:$nssf,nhif:$nhif,loans:$loans,others:$others){
         id
     }
 }
@@ -477,7 +477,7 @@ export {
     hosts,
     locations,
     searchHosts,
-    registerGuardPersonalDetails,
+    registerGuard,
     fetchProfilePodcasts,
     fetchHostPodcasts,
     fetchUserProfile,

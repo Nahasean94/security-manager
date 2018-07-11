@@ -5,7 +5,12 @@ import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import validator from 'validator'
 import {isEmpty} from 'lodash'
 import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
-import {registerGuardPersonalDetails} from '../../shared/queries'
+import {locations, registerGuard} from '../../shared/queries'
+import {Query} from "graphql-react"
+import Select from 'react-select'
+
+
+let locationOptions
 
 class PersonalDetails extends Component {
     constructor(props) {
@@ -19,9 +24,20 @@ class PersonalDetails extends Component {
             gender: '',
             nationalID: '',
             employment_date: '',
-            password:'',
-            passwordConfirmation:'',
-            message:'',
+            password: '',
+            passwordConfirmation: '',
+            message: '',
+            email: '',
+            cellphone: '',
+            postal_address: '',
+            location: '',
+            gross: '',
+            paye: '',
+            nssf: '',
+            nhif: '',
+            loans: '',
+            others: '',
+            display: 'personal',
             errors: {},
             isLoading: false,
             invalid: false
@@ -29,14 +45,54 @@ class PersonalDetails extends Component {
         }
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
-
+        this.backToPersonalDetails = this.backToPersonalDetails.bind(this)
+        this.forwardToContactDetails = this.forwardToContactDetails.bind(this)
+        this.backToContactDetails = this.backToContactDetails.bind(this)
+        this.forwardToPaymentDetails = this.forwardToPaymentDetails.bind(this)
+        this.backToPaymentDetails = this.backToPaymentDetails.bind(this)
+        this.handleLocationChange = this.handleLocationChange.bind(this)
     }
 
+    handleLocationChange = (location) => {
+        this.setState({location})
+    }
 
-    validateInput(data) {
+    backToPersonalDetails(e) {
+        e.preventDefault()
+        this.setState({display: 'personal'})
+    }
+
+    forwardToContactDetails(e) {
+        e.preventDefault()
+        if (this.isPersonalInfoValid()) {
+            this.setState({display: 'contact'})
+        }
+    }
+
+    backToContactDetails(e) {
+        e.preventDefault()
+        this.setState({display: 'contact'})
+    }
+
+    forwardToPaymentDetails(e) {
+        e.preventDefault()
+        if (this.isContactInfoValid()) {
+            this.setState({display: 'payment'})
+        }
+    }
+
+    backToPaymentDetails(e) {
+        e.preventDefault()
+        this.setState({display: 'payment'})
+    }
+
+    validatePersonalInfo(data) {
         let errors = {}
         if (!data.guard_id) {
             errors.guard_id = 'This field is required'
+        }
+        if (!data.nationalID) {
+            errors.nationalID = 'This field is required'
         }
         if (validator.isEmpty(data.first_name)) {
             errors.first_name = 'This field is required'
@@ -48,9 +104,6 @@ class PersonalDetails extends Component {
             errors.gender = 'This field is required'
         }
         if (validator.isEmpty(data.dob)) {
-            errors.dob = 'This field is required'
-        }
-        if (validator.isEmpty(data.nationalID)) {
             errors.dob = 'This field is required'
         }
         if (validator.isEmpty(data.password)) {
@@ -83,8 +136,54 @@ class PersonalDetails extends Component {
         }
     }
 
-    isValid() {
-        const {errors, isValid} = this.validateInput(this.state)
+    validateContactInfo(data) {
+        let errors = {}
+        if (validator.isEmpty(data.email)) {
+            errors.email = 'This field is required'
+        }
+        if (!data.cellphone) {
+            errors.cellphone = 'This field is required'
+        }
+        let {location} = this.state
+        location=location.value
+        if (validator.isEmpty(location)) {
+            errors.location = 'This field is required'
+        }
+        return {
+            errors,
+            isValid: isEmpty(errors)
+        }
+    }
+
+    validatePaymentInfo(data) {
+        let errors = {}
+        if (!data.gross) {
+            errors.gross = 'This field is required'
+        }
+        return {
+            errors,
+            isValid: isEmpty(errors)
+        }
+    }
+
+    isPersonalInfoValid() {
+        const {errors, isValid} = this.validatePersonalInfo(this.state)
+        if (!isValid) {
+            this.setState({errors})
+        }
+        return isValid
+    }
+
+    isContactInfoValid() {
+        const {errors, isValid} = this.validateContactInfo(this.state)
+        if (!isValid) {
+            this.setState({errors})
+        }
+        return isValid
+    }
+
+    isPaymentValid() {
+        const {errors, isValid} = this.validatePaymentInfo(this.state)
         if (!isValid) {
             this.setState({errors})
         }
@@ -93,51 +192,73 @@ class PersonalDetails extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        if (this.isValid() || !this.state.invalid) {
+        if (this.isPaymentValid() || !this.state.invalid) {
+            console.log(this.state)
             this.setState({errors: {}, isLoading: true})
-                    this.props.graphql
-                        .query({
-                            fetchOptionsOverride: fetchOptionsOverride,
-                            resetOnLoad: true,
-                            operation: {
-                                variables: {
-                                    guard_id:this.state.guard_id,
-                                    surname:this.state.surname,
-                                    first_name:this.state.first_name,
-                                    last_name:this.state.last_name,
-                                    dob:this.state.dob,
-                                    gender:this.state.gender,
-                                    password:this.state.password,
-                                    nationalID:this.state.nationalID,
-                                    employment_date:this.state.guard_id,
-                                },
-                                query: registerGuardPersonalDetails
-                            }
+            this.props.graphql
+                .query({
+                    fetchOptionsOverride: fetchOptionsOverride,
+                    resetOnLoad: true,
+                    operation: {
+                        variables: {
+                            guard_id: this.state.guard_id,
+                            surname: this.state.surname,
+                            first_name: this.state.first_name,
+                            last_name: this.state.last_name,
+                            dob: this.state.dob,
+                            gender: this.state.gender,
+                            nationalID: this.state.nationalID,
+                            employment_date: this.state.employment_date,
+                            password: this.state.password,
+                            email: this.state.email,
+                            cellphone: this.state.cellphone,
+                            postal_address: this.state.postal_address,
+                            location: this.state.location.value,
+                            gross: this.state.gross,
+                            paye: this.state.paye,
+                            nssf: this.state.nssf,
+                            nhif: this.state.nhif,
+                            loans: this.state.loans,
+                            others: this.state.others,
+                        },
+                        query: registerGuard
+                    }
+                })
+                .request.then(({data}) => {
+                    if (data) {
+                        this.setState({
+                            guard_id: '',
+                            surname: '',
+                            first_name: '',
+                            last_name: '',
+                            dob: '',
+                            gender: '',
+                            nationalID: '',
+                            employment_date: '',
+                            password: '',
+                            passwordConfirmation: '',
+                            message: '',
+                            email: '',
+                            cellphone: '',
+                            postal_address: '',
+                            location: '',
+                            gross: '',
+                            paye: '',
+                            nssf: '',
+                            nhif: '',
+                            loans: '',
+                            others: '',
+                            errors: {},
+                            isLoading: false,
+                            invalid: false,
+                            message: data.registerGuard
+                                ? this.setState({message: 'Personal Details successfully added'})
+                                : this.setState({message: 'Registration Failed'})
                         })
-                        .request.then(({data}) => {
-                            if (data) {
-                                this.setState({
-                                    guard_id: '',
-                                    surname: '',
-                                    first_name: '',
-                                    last_name: '',
-                                    dob: '',
-                                    gender: '',
-                                    password:'',
-                                    passwordConfirmation:'',
-                                    nationalID: '',
-                                    employment_date: '',
-                                    errors: {},
-                                    isLoading: false,
-                                    invalid: false,
-                                     message: data.registerGuardPersonalDetails
-                                        ? this.setState({message:'Personal Details successfully added'})
-                                        : this.setState({message:'Registration Failed'})
-                                })
-                                this.props.showContactAndPaymentDetailsModal()
-                            }
-                        }
-                    )
+                        this.props.onClose()
+                    }
+                }
+            )
         }
     }
 
@@ -148,7 +269,9 @@ class PersonalDetails extends Component {
     render() {
         const {show, onClose} = this.props
 
-        const {errors, isLoading, invalid, guard_id, surname, first_name, last_name, dob, gender, nationalID, employment_date,password,passwordConfirmation} = this.state
+        const {
+            errors, isLoading, invalid, guard_id, surname, first_name, last_name, dob, gender, nationalID, employment_date, password, passwordConfirmation, display, message, email, cellphone, postal_address, location, gross, paye, nssf, nhif, loans, others
+        } = this.state
         const err = () => {
             for (let prop in errors) {
                 if (errors.hasOwnProperty(prop)) {
@@ -159,12 +282,13 @@ class PersonalDetails extends Component {
 
             }
         }
+
         if (show) {
             return (
-                <Modal isOpen={show} toggle={onClose} size="lg">
-                    <ModalHeader toggle={onClose}>Personal details</ModalHeader>
+                <Modal isOpen={show} toggle={onClose} size="lg" className="modal-dialog-centered">
+                    <ModalHeader toggle={onClose}>Register new guard</ModalHeader>
                     <ModalBody>
-                        <form onSubmit={this.onSubmit}>
+                        {display === 'personal' && <form>
                             <TextFieldGroup
                                 label="Guard ID"
                                 type="number"
@@ -173,7 +297,6 @@ class PersonalDetails extends Component {
                                 onChange={this.onChange}
                                 error={errors.guard_id}
                                 disabled={true}
-
                             />
 
                             <TextFieldGroup
@@ -184,7 +307,6 @@ class PersonalDetails extends Component {
                                 onChange={this.onChange}
                                 error={errors.surname}
                                 disabled={true}
-
                             />
                             <TextFieldGroup
                                 label="First name"
@@ -252,23 +374,169 @@ class PersonalDetails extends Component {
                                 disabled={true}
                             />
                             <div className="form-group row">
-                                <label className="col-sm-2 col-form-label" htmlFor="gender">Gender</label>
-                                <div className="col-sm-10">
+                                <label className="col-sm-3 col-form-label" htmlFor="gender">Gender</label>
+                                <div className="col-sm-9">
                                     <select className="form-control form-control-sm" id="gender" name="gender"
-                                            required="true" onChange={this.onChange} value={gender}>
+                                            required="true" value={gender} onChange={this.onChange}>
                                         <option>Select</option>
                                         <option value="male">Male</option>
-                                        <option value="female">female</option>
+                                        <option value="female">Female</option>
                                     </select>
+                                    {errors.gender && <div className="invalid-feedback">{errors.gender}</div>}
                                 </div>
                             </div>
                             <div className="form-group row">
-                                <div className="col-sm-4 offset-sm-4">
-                                    <button disabled={isLoading || invalid} className="btn btn-dark btn-sm form-control" type="submit">Next
+                                <div className="col-sm-4 offset-sm-8">
+                                    <button disabled={isLoading || invalid}
+                                            className="btn btn-dark btn-sm form-control"
+                                            onClick={this.forwardToContactDetails}>Next
                                     </button>
                                 </div>
                             </div>
-                        </form>
+                        </form>}
+                        {display === 'contact' && <form onSubmit={this.onSubmit}>
+                            <TextFieldGroup
+                                label="Email"
+                                type="text"
+                                name="email"
+                                value={email}
+                                onChange={this.onChange}
+                                error={errors.email}
+                                disabled={true}
+                            />
+                            <TextFieldGroup
+                                label="Phone number"
+                                type="number"
+                                name="cellphone"
+                                value={cellphone}
+                                onChange={this.onChange}
+                                error={errors.cellphone}
+                                disabled={true}
+                            />
+                            <TextFieldGroup
+                                label="Postal address (P.O Box)"
+                                type="text"
+                                name="postal_address"
+                                value={postal_address}
+                                onChange={this.onChange}
+                                error={errors.postal_address}
+                                disabled={true}
+                            />
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label" htmlFor="hosts">Location
+                                    deployed</label>
+                                <div className="col-sm-9">
+                                    <Query
+                                        loadOnMount
+                                        loadOnReset
+                                        fetchOptionsOverride={fetchOptionsOverride}
+                                        query={locations}
+                                    >
+                                        {({loading, data}) => {
+                                            if (data) {
+                                                locationOptions = data.locations.map(location => {
+                                                    return {
+                                                        label: location.name,
+                                                        value: location.id
+                                                    }
+                                                })
+                                                return <Select.Creatable
+                                                    closeOnSelect={true}
+                                                    onChange={this.handleLocationChange}
+                                                    options={locationOptions}
+                                                    placeholder="Search locations"
+                                                    removeSelected={true}
+                                                    value={this.state.location}/>
+                                            }
+                                            else if (loading) {
+                                                return <p>Loading…</p>
+                                            }
+                                            return <p>Loading failed.</p>
+                                        }
+                                        }
+                                    </Query>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <div className="col-sm-3 offset-sm-3">
+                                    <button disabled={isLoading || invalid}
+                                            className="btn btn-secondary btn-sm form-control"
+                                            onClick={this.backToPersonalDetails}>Back
+                                    </button>
+                                </div>
+                                <div className="col-sm-3">
+                                    <button disabled={isLoading || invalid}
+                                            className="btn btn-dark btn-sm form-control"
+                                            onClick={this.forwardToPaymentDetails}>Next
+                                    </button>
+                                </div>
+                            </div>
+                        </form>}
+                        {display === 'payment' && <form onSubmit={this.onSubmit}>
+                            <TextFieldGroup
+                                label="Gross Salary"
+                                type="number"
+                                name="gross"
+                                value={gross}
+                                onChange={this.onChange}
+                                error={errors.gross}
+                            />
+                            <TextFieldGroup
+                                label="PAYE"
+                                type="number"
+                                name="paye"
+                                value={paye}
+                                onChange={this.onChange}
+                                error={errors.paye}
+                            />
+                            <TextFieldGroup
+                                label="NHIF"
+                                type="number"
+                                name="nhif"
+                                value={nhif}
+                                onChange={this.onChange}
+                                error={errors.nhif}
+                            />
+                            <TextFieldGroup
+                                label="NSSF"
+                                type="number"
+                                name="nssf"
+                                value={nssf}
+                                onChange={this.onChange}
+                                error={errors.nssf}
+                            />
+                            <TextFieldGroup
+                                label="Loans"
+                                type="number"
+                                name="loans"
+                                value={loans}
+                                onChange={this.onChange}
+                                error={errors.loans}
+                            />
+                            <TextFieldGroup
+                                label="Others"
+                                type="number"
+                                name="others"
+                                value={others}
+                                onChange={this.onChange}
+                                error={errors.others}
+                            />
+
+                            <div className="form-group row">
+                                <div className="col-sm-3 offset-sm-3">
+                                    <button disabled={isLoading || invalid}
+                                            className="btn btn-secondary btn-sm form-control"
+                                            onClick={this.backToContactDetails}>Back
+                                    </button>
+                                </div>
+                                <div className="col-sm-3">
+                                    <button disabled={isLoading || invalid}
+                                            className="btn btn-dark btn-sm form-control"
+                                            type="submit" onClick={this.onSubmit}>Save
+                                    </button>
+                                </div>
+                            </div>
+                        </form>}
                     </ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={onClose}>Cancel</Button>{' '}
@@ -287,8 +555,6 @@ PersonalDetails.propTypes = {
     onClose: PropTypes.func.isRequired,
     showContactAndPaymentDetailsModal: PropTypes.func.isRequired,
     closeContactAndPaymentDetailsModal: PropTypes.func.isRequired,
-
-
 }
 PersonalDetails.contextTypes = {
     router: PropTypes.object.isRequired

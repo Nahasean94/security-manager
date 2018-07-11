@@ -4,6 +4,7 @@ import ContactAndLocationDetails from "../guards/ContactAndLocationDetails"
 import PaymentDetails from "../guards/PaymentDetails"
 import NewLocationForm from "../locations/NewLocationForm"
 import {Consumer} from "graphql-react"
+import TestModal from "../guards/Test"
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -13,6 +14,7 @@ class Dashboard extends React.Component {
             showContactAndPaymentDetailsModal: false,
             showPaymentDetailsModal: false,
             showNewLocationFormModal: false,
+            showTestModal: false,
         }
         this.showPersonalDetailsModal = this.showPersonalDetailsModal.bind(this)
         this.closePersonalDetailsModal = this.closePersonalDetailsModal.bind(this)
@@ -23,6 +25,8 @@ class Dashboard extends React.Component {
         this.closePaymentDetailsModal = this.closePaymentDetailsModal.bind(this)
         this.showNewLocationFormModal = this.showNewLocationFormModal.bind(this)
         this.closeNewLocationFormModal = this.closeNewLocationFormModal.bind(this)
+        this.showTestModal = this.showTestModal.bind(this)
+        this.closeTestModal = this.closeTestModal.bind(this)
     }
 
     showPersonalDetailsModal() {
@@ -55,17 +59,22 @@ class Dashboard extends React.Component {
     }
 
     showNewLocationFormModal() {
-
         this.setState({showNewLocationFormModal: true})
-
     }
 
     closeNewLocationFormModal() {
         this.setState({showNewLocationFormModal: false})
     }
+    showTestModal() {
+        this.setState({showTestModal: true})
+    }
+
+    closeTestModal() {
+        this.setState({showTestModal: false})
+    }
 
     render() {
-        const {showPersonalDetailsModal, showContactAndPaymentDetailsModal, showPaymentDetailsModal, showNewLocationFormModal} = this.state
+        const {showPersonalDetailsModal, showContactAndPaymentDetailsModal, showPaymentDetailsModal, showNewLocationFormModal, showTestModal} = this.state
 
         return (
             <div>
@@ -74,19 +83,18 @@ class Dashboard extends React.Component {
                 <br/>
                 <button className="btn btn-sm btn-secondary" onClick={this.showNewLocationFormModal}>new location
                 </button>
+                <br/>
+                <br/>
+                <button className="btn btn-sm btn-secondary" onClick={this.showTestModal}>test
+                </button>
                 <Consumer>{graphql => <PersonalDetails graphql={graphql} show={showPersonalDetailsModal}
-                                                       onClose={this.closePersonalDetailsModal}
+                                                       onClose={this.closeTestModal}
                                                        showContactAndPaymentDetailsModal={this.showContactAndPaymentDetailsModal}
                                                        closeContactAndPaymentDetailsModal={this.closeContactAndPaymentDetailsModal}/>}</Consumer>
-                <Consumer>{graphql => <ContactAndLocationDetails graphql={graphql}
-                                                                show={true} message="Successfully added personal details"
-                                                                onClose={this.closeContactAndPaymentDetailsModal}
-                                                                showPaymentDetailsModal={this.showPaymentDetailsModal}
-                                                                closePaymentDetailsModal={this.closePaymentDetailsModal}/>}</Consumer>
-                <Consumer>{graphql => <PaymentDetails graphql={graphql} show={showPaymentDetailsModal}
-                                                      onClose={this.closePaymentDetailsModal}/>}</Consumer>
                 <Consumer>{graphql => <NewLocationForm graphql={graphql} show={showNewLocationFormModal}
                                                        onClose={this.closeNewLocationFormModal}/>}</Consumer>
+                <Consumer>{graphql => <TestModal graphql={graphql} show={showTestModal}
+                                                       onClose={this.closeTestModal}/>}</Consumer>
             </div>
         )
     }
