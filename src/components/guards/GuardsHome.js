@@ -5,7 +5,9 @@ import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
 import {dbPromise} from './indexDB'
 import {Query} from "graphql-react"
 import Select from 'react-select'
-// const {ipcRenderer} = window.require('electron')
+import validator from "validator"
+import {isEmpty} from "lodash"
+import bcrypt from 'bcryptjs-then'
 
 let locationOptions
 
@@ -16,7 +18,11 @@ class GuardsHome extends Component {
             guard_id: '',
             password: '',
             guards: [],
-            location: ''
+            location: '',
+            errors: {},
+            isLoading: false,
+            invalid: false
+
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -36,13 +42,6 @@ class GuardsHome extends Component {
             })
             .request.then(({data}) => {
                 if (data) {
-                    // dbPromise.then(function (db) {
-                    //     let tx = db.transaction('guards', 'readonly')
-                    //     let store = tx.objectStore('guards')
-                    //     return store.get(4545)
-                    // }).then(function (val) {
-                    //
-                    // })
                     if (data.findGuardsInLocation.length > 0) {
                         dbPromise.then(function (db) {
                             let tx = db.transaction('guards', 'readwrite')
@@ -50,8 +49,8 @@ class GuardsHome extends Component {
                             return data.findGuardsInLocation.map(guard => {
                                 return store.add(guard)
                             })
-                        }).then(sth=>{
-                            console.log("sdfsd",sth)
+                        }).then(sth => {
+
                         })
                     }
                 }
@@ -59,57 +58,79 @@ class GuardsHome extends Component {
         )
     }
 
-    // componentDidMount() {
-    //     this.props.graphql
-    //         .query({
-    //             fetchOptionsOverride: fetchOptionsOverride,
-    //             resetOnLoad: true,
-    //             operation: {
-    //                 variables: {guard_id: '5b3f9fa2f9cf5c2a64af648d'},
-    //                 query: findGuardsInLocation
-    //             }
-    //         })
-    //         .request.then(({data}) => {
-    //             if (data) {
-    //                 dbPromise.then(function (db) {
-    //                     let tx = db.transaction('guards', 'readonly')
-    //                     let store = tx.objectStore('guards')
-    //                     return store.get(4545)
-    //                 }).then(function (val) {
-    //
-    //                 })
-    //             }
-    //         }
-    //     )
-    // }
-
     onChange(e) {
         this.setState({[e.target.name]: e.target.value})
 
     }
 
+    validateInfo(data) {
+        let errors = {}
+        if (validator.isEmpty(data.password)) {
+            errors.password = 'This field is required'
+        }
+        if (!data.guard_id) {
+            errors.guard_id = 'This field is required'
+        }
+        return {
+            errors,
+            isValid: isEmpty(errors)
+        }
+    }
+
+    isValid() {
+        const {errors, isValid} = this.validateInfo(this.state)
+        if (!isValid) {
+            this.setState({errors})
+        }
+        return isValid
+    }
+
 
     onSubmit(e) {
         e.preventDefault()
-        // ipcRenderer.send('get-guard', {guard_id: this.state.guard_id    , password: this.state.password})
-        // ipcRenderer.on('got-guard', (event, guard) => {
-        //     if (guard) {
-        //         this.setState({guards: [...this.state.guards, guard.first_name + " " + guard.last_name]})
-        //         ipcRenderer.send('sign-in', {guard: guard, time: new Date()})
-        //     }
-        // })
-        this.setState({guard_id: '', password: ''})
+        if (this.isValid()) {
+            dbPromise.then(db => {
+                let tx = db.transaction('guards', 'readonly')
+                let store = tx.objectStore('guards')
+                return store.get(Number(this.state.guard_id))
+            }).then(guard => {
+                if (guard) {
+                    bcrypt.compare(this.state.password, guard.password).then(valid => {
+                        if (valid) {
+                            this.setState({
+                                guard_id: '',
+                                password: '',
+                                guards: [...this.state.guards, guard.first_name]
+                            })
+                        } else {
+                            let errors = {}
+                            errors.password = 'Incorrect password'
+                            this.setState({errors})
+                        }
+                    })
+                } else {
+                    let errors = {}
+                    errors.guard_id = 'Guard ID Not Found'
+                    this.setState({errors})
+                }
+            })
+        }
     }
 
 
     render() {
-        const {guards} = this.state
+        const {guards, errors, isLoading, invalid} = this.state
         return (
             <div>
                 <div className="container-fluid">
                     <div className="row flex-xl-nowrap">
                         <div className="col-2 col-md-2 bd-sidebar">
                             <h3>Signed in</h3>
+                            <ul className="list-unstyled">
+                                <li><strong>Bony Matheka</strong></li>
+                                <li><strong>Nahashon Njenga</strong></li>
+                                <li><strong>Ndathe Mike</strong></li>
+                            </ul>
                             <ul className="list-unstyled">
                                 {guards.map(guard => {
                                     return <li className=""><strong className="names">{guard}</strong>
@@ -129,9 +150,10 @@ class GuardsHome extends Component {
                                     <TextFieldGroup
                                         label="Guard ID"
                                         type="number"
-                                        name="id"
+                                        name="guard_id"
                                         value={this.state.guard_id}
                                         onChange={this.onChange}
+                                        error={errors.guard_id}
                                     />
                                     <TextFieldGroup
                                         label="Password"
@@ -139,6 +161,7 @@ class GuardsHome extends Component {
                                         name="password"
                                         value={this.state.password}
                                         onChange={this.onChange}
+                                        error={errors.password}
                                     />
                                     <div className="form-group row">
                                         <div className="col-sm-9 offset-sm-3">
@@ -185,11 +208,12 @@ class GuardsHome extends Component {
                         </div>
                     </div>
                 </div>
-            </div>)
+                <
+                /div>)
 
-    }
-}
+                }
+                }
 
 
-export default GuardsHome
+                export default GuardsHome
 

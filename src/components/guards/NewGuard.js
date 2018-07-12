@@ -116,7 +116,7 @@ class NewGuard extends Component {
             errors.passwordConfirmation = 'Passwords must match'
         }
         if (Date.parse(data.dob) > Date.parse(new Date('2000'))) {
-            errors.dob = "A teacher must be 18 and above"
+            errors.dob = "A guard must be 18 and above"
         }
         if (validator.isEmpty(data.employment_date)) {
             errors.employment_date = 'This field is required'
@@ -143,6 +143,9 @@ class NewGuard extends Component {
         }
         if (!data.cellphone) {
             errors.cellphone = 'This field is required'
+        }
+        if (data.cellphone.length<10|| data.cellphone.length>10) {
+            errors.cellphone = 'Phone number must be at 10 digits'
         }
         let {location} = this.state
         location=location.value
@@ -399,7 +402,7 @@ class NewGuard extends Component {
                         {display === 'contact' && <form onSubmit={this.onSubmit}>
                             <TextFieldGroup
                                 label="Email"
-                                type="text"
+                                type="email"
                                 name="email"
                                 value={email}
                                 onChange={this.onChange}

@@ -39,6 +39,9 @@ class SignupForm extends React.Component {
             errors.email = 'This field must be an email'
         }
 
+        if (data.password.length<8) {
+            errors.password = 'Password must be at least 8 characters'
+        }
         if (validator.isEmpty(data.password)) {
             errors.password = 'This field is required'
         }
