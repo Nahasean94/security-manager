@@ -469,6 +469,28 @@ date_joined
 address
 }
 }`
+const getGuardsInLocation=`
+query($id:ID!){
+person(id:$id){
+username
+email
+role
+profile_picture
+date_joined
+address
+}
+}`
+
+const findGuardsInLocation=`
+query($id:ID!){
+findGuardsInLocation(id:$id){
+id
+guard_id
+first_name
+email
+password
+}
+}`
 
 export {
     addLocation,
@@ -495,5 +517,6 @@ export {
     createNewPodcast,
     uploadFile,
     uploadProfilePicture,
+    findGuardsInLocation,
     person
 }

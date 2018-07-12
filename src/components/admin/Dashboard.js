@@ -9,8 +9,6 @@ class Dashboard extends React.Component {
         super(props)
         this.state = {
             showNewGuardModal: false,
-            showContactAndPaymentDetailsModal: false,
-            showPaymentDetailsModal: false,
             showNewLocationFormModal: false,
             showTestModal: false,
         }
@@ -21,7 +19,6 @@ class Dashboard extends React.Component {
         this.showTestModal = this.showTestModal.bind(this)
         this.closeTestModal = this.closeTestModal.bind(this)
     }
-
     showNewGuardModal() {
         this.setState({showNewGuardModal: true})
     }
@@ -37,11 +34,9 @@ class Dashboard extends React.Component {
     showTestModal() {
         this.setState({showTestModal: true})
     }
-
     closeTestModal() {
         this.setState({showTestModal: false})
     }
-
     render() {
         const {showNewGuardModal, showNewLocationFormModal, showTestModal} = this.state
 

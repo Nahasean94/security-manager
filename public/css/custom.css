@@ -13,6 +13,9 @@ body {
 .bd-sidebar {
     border-right: 1px solid rgba(0, 0, 0, .1);
 }
+.bd-location{
+    border-left: 1px solid rgba(0, 0, 0, .1);
+}
 
 .bd-content {
     margin-top: 10%;
@@ -21,7 +24,7 @@ body {
 .sign-in-form {
     padding: 10px;
     /*border: 1px solid #b8c0b5;*/
-    background: #ecedee;
+    /*background: #ecedee;*/
 }
 #body{
     margin-top: 70px;

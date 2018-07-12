@@ -12,8 +12,8 @@ export default () => {
             <div>
                 <App>
                     <Switch>
-                        <Route exact path="/" component={Home}/>
-                        <Route exact path="/admin" component={requireAuth(Dashboard)}/>
+                        <Route exact path="/" component={requireAuth(Dashboard)}/>
+                        <Route exact path="/guards" component={Home}/>
                     </Switch>
                 </App>
             </div>

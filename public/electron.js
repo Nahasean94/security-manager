@@ -20,7 +20,7 @@ let mainWindow
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1200, height: 780, resizable: true, webPreferences: {
-            webSecurity: false
+            webSecurity: false,
         }
     })
     mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`)

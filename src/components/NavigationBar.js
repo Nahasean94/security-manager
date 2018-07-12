@@ -31,7 +31,7 @@ class NavigationBar extends React.Component {
         e.preventDefault()
         window.location.reload()
         localStorage.removeItem('SecurityManager')
-        this.context.router.history.push('/signin')
+        this.context.router.history.push('/guards')
     }
 
     render() {
@@ -44,9 +44,9 @@ class NavigationBar extends React.Component {
         }
 
         const userLinks = (<div className="navbar-nav flex-row ml-md-auto">
-            <a className="nav-item nav-link" onClick={this.logout}>Logout </a>
-            {token && <Link to="/admin" className="nav-item nav-link">Dashboard</Link>}
-
+            {/*<a className="nav-item nav-link" href="" > </a>*/}
+            <Link to="/" className="nav-item nav-link" onClick={this.logout}>Logout</Link>
+            {/*{token && <Link to="/" className="nav-item nav-link">Dashboard</Link>}*/}
         </div>)
 
         const guestLinks = (

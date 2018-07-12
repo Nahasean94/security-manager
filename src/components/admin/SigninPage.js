@@ -13,7 +13,7 @@ export default ({show, onClose}) => {
                     <div className='container-fluid'>
                         <div className='row'>
                             <div className="col-sm-4">
-                                <LoginPage/>
+                                <LoginPage onClose={onClose}/>
                             </div>
                             <div className="col-sm-6 offset-2">
                                 <SignupPage/>

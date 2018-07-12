@@ -9,7 +9,7 @@ class LoginPage extends React.Component {
 
                 <div >
 
-                    <Consumer >{graphql =>   <LoginForm  graphql={graphql}/>}</Consumer>
+                    <Consumer >{graphql =>   <LoginForm  graphql={graphql} onClose={this.props.onClose}/>}</Consumer>
                 </div>
 
         )

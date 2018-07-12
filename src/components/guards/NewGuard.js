@@ -249,6 +249,7 @@ class NewGuard extends Component {
                             loans: '',
                             others: '',
                             errors: {},
+                            display: 'personal',
                             isLoading: false,
                             invalid: false,
                             message: data.registerGuard
@@ -256,6 +257,7 @@ class NewGuard extends Component {
                                 : this.setState({message: 'Registration Failed'})
                         })
                         this.props.onClose()
+
                     }
                 }
             )

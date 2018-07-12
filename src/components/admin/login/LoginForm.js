@@ -74,13 +74,14 @@ class LoginForm extends React.Component {
                     }
                     else {
                         this.props.setLoginToken(data.login.token)
-                        this.context.router.history.push('/admin')
+                        this.context.router.history.push('/')
                         this.setState({
                             loading: false,
                             message: data
                                 ? `Logged in.`
                                 : `Logging failed.`
                         })
+                        this.props.onClose()
                     }
 
                 }
