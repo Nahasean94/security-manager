@@ -9,6 +9,15 @@ import validator from "validator"
 import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
 import GuardModal from "./modals/GuardModal"
+import PropTypes from 'prop-types'
+
+import {
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+} from "reactstrap"
 
 let locationOptions
 
@@ -23,7 +32,9 @@ class GuardsHome extends Component {
             errors: {},
             isLoading: false,
             invalid: false,
-            showGuardModal: false
+            showGuardModal: false,
+            dropdownOpen: false,
+            display: 'authorize',
 
         }
         this.onSubmit = this.onSubmit.bind(this)
@@ -31,6 +42,37 @@ class GuardsHome extends Component {
         this.handleLocationChange = this.handleLocationChange.bind(this)
         this.showGuardModal = this.showGuardModal.bind(this)
         this.closeGuardModal = this.closeGuardModal.bind(this)
+        this.changeDisplayToAuthorize = this.changeDisplayToAuthorize.bind(this)
+        this.changeDisplayToInbox = this.changeDisplayToInbox.bind(this)
+        this.changeDisplayToLeave = this.changeDisplayToLeave.bind(this)
+        this.changeDisplayToRetire = this.changeDisplayToRetire.bind(this)
+        this.toggle = this.toggle.bind(this)
+        this.applyForLeave = this.applyForLeave.bind(this)
+    }
+    changeDisplayToAuthorize(e) {
+        e.preventDefault()
+        this.setState({display: 'authorize'})
+    }
+
+    changeDisplayToInbox(e) {
+        e.preventDefault()
+        this.setState({display: 'inbox'})
+    }
+
+    changeDisplayToLeave(e) {
+        e.preventDefault()
+        this.setState({display: 'leave'})
+    }
+
+    changeDisplayToRetire(e) {
+        e.preventDefault()
+        this.setState({display: 'retire'})
+    }
+
+    toggle() {
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen
+        })
     }
 
     showGuardModal(e) {
@@ -96,6 +138,10 @@ class GuardsHome extends Component {
             this.setState({errors})
         }
         return isValid
+    }
+    applyForLeave(e){
+        e.preventDefault()
+        this.context.router.history.push('/leave')
     }
 
 
@@ -206,10 +252,23 @@ class GuardsHome extends Component {
                                         error={errors.password}
                                     />
                                     <div className="form-group row">
-                                        <div className="col-sm-9 offset-sm-3">
+                                        <div className="col-sm-5 offset-sm-3">
                                             <input type="submit" value="Sign in"
                                                    className="form-control btn btn-secondary btn-sm "/>
                                         </div>
+                                        <Dropdown group  isOpen={this.state.dropdownOpen} size="sm"
+                                                  toggle={this.toggle}>
+                                            <DropdownToggle caret>
+                                                More actions
+                                            </DropdownToggle>
+                                            <DropdownMenu>
+                                                <DropdownItem onClick={this.applyForLeave}>Apply for leave</DropdownItem>
+                                                <DropdownItem divider/>
+                                                <DropdownItem> View inbox</DropdownItem>
+                                                <DropdownItem divider/>
+                                                <DropdownItem>Apply for retirement</DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
                                     </div>
                                 </form>
                             </div>
@@ -252,10 +311,11 @@ class GuardsHome extends Component {
                     </div>
                 </div>
             </div>)
-
     }
 }
 
-
+GuardsHome.contextTypes={
+    router:PropTypes.object.isRequired
+}
 export default GuardsHome
 

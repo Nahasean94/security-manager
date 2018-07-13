@@ -48,9 +48,9 @@ class Dashboard extends React.Component {
                 <button className="btn btn-sm btn-secondary" onClick={this.showNewLocationFormModal}>new location
                 </button>
                 <br/>
-                <br/>
-                <button className="btn btn-sm btn-secondary" onClick={this.showTestModal}>test
-                </button>
+                {/*<br/>*/}
+                {/*<button className="btn btn-sm btn-secondary" onClick={this.showTestModal}>test*/}
+                {/*</button>*/}
                 <Consumer>{graphql => <NewGuard graphql={graphql} show={showNewGuardModal} onClose={this.closeNewGuardModal} />}</Consumer>
                 <Consumer>{graphql => <NewLocationForm graphql={graphql} show={showNewLocationFormModal}
                                                        onClose={this.closeNewLocationFormModal}/>}</Consumer>
