@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import TextFieldGroup from "../../shared/TextFieldsGroup"
-import {findGuardsInLocation, locations} from "../../shared/queries"
+import {findGuardsInLocation, locations, signin} from "../../shared/queries"
 import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
 import {dbPromise} from './indexDB'
 import {Query} from "graphql-react"
@@ -8,6 +8,7 @@ import Select from 'react-select'
 import validator from "validator"
 import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
+import GuardModal from "./modals/GuardModal"
 
 let locationOptions
 
@@ -21,12 +22,24 @@ class GuardsHome extends Component {
             location: '',
             errors: {},
             isLoading: false,
-            invalid: false
+            invalid: false,
+            showGuardModal: false
 
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
         this.handleLocationChange = this.handleLocationChange.bind(this)
+        this.showGuardModal = this.showGuardModal.bind(this)
+        this.closeGuardModal = this.closeGuardModal.bind(this)
+    }
+
+    showGuardModal(e) {
+        e.preventDefault()
+        this.setState({showGuardModal: true})
+    }
+
+    closeGuardModal(e) {
+        this.setState({showGuardModal: false})
     }
 
     handleLocationChange = (location) => {
@@ -50,7 +63,7 @@ class GuardsHome extends Component {
                                 return store.add(guard)
                             })
                         }).then(sth => {
-
+                            console.log(sth)
                         })
                     }
                 }
@@ -89,18 +102,51 @@ class GuardsHome extends Component {
     onSubmit(e) {
         e.preventDefault()
         if (this.isValid()) {
+            const {guard_id, password} = this.state
             dbPromise.then(db => {
                 let tx = db.transaction('guards', 'readonly')
                 let store = tx.objectStore('guards')
-                return store.get(Number(this.state.guard_id))
+                return store.get(Number(guard_id))
             }).then(guard => {
                 if (guard) {
-                    bcrypt.compare(this.state.password, guard.password).then(valid => {
+                    bcrypt.compare(password, guard.password).then(valid => {
                         if (valid) {
                             this.setState({
                                 guard_id: '',
                                 password: '',
+                                errors: {},
                                 guards: [...this.state.guards, guard.first_name]
+                            })
+                            const signedIn = {
+                                guard_id: guard_id,
+                                signin: new Date().toLocaleString(),
+                                signout: '',
+                                date: new Date().toLocaleDateString()
+                            }
+                            dbPromise.then(db => {
+                                let tx = db.transaction('attendance', 'readwrite')
+                                let store = tx.objectStore('attendance')
+                                return store.add(signedIn)
+                            }).then(added => {
+                                this.props.graphql
+                                    .query({
+                                        fetchOptionsOverride: fetchOptionsOverride,
+                                        resetOnLoad: true,
+                                        operation: {
+                                            variables: {
+                                                guard_id: signedIn.guard_id,
+                                                signin: signedIn.signin,
+                                                date: signedIn.date
+                                            },
+                                            query: signin
+                                        }
+                                    })
+                                    .request.then(({data}) => {
+                                        if (data) {
+                                            console.log(data)
+                                        }
+                                    }
+                                )
                             })
                         } else {
                             let errors = {}
@@ -119,7 +165,7 @@ class GuardsHome extends Component {
 
 
     render() {
-        const {guards, errors, isLoading, invalid} = this.state
+        const {guards, errors, isLoading, showGuardModal} = this.state
         return (
             <div>
                 <div className="container-fluid">
@@ -127,21 +173,17 @@ class GuardsHome extends Component {
                         <div className="col-2 col-md-2 bd-sidebar">
                             <h3>Signed in</h3>
                             <ul className="list-unstyled">
-                                <li><strong>Bony Matheka</strong></li>
-                                <li><strong>Nahashon Njenga</strong></li>
-                                <li><strong>Ndathe Mike</strong></li>
-                            </ul>
-                            <ul className="list-unstyled">
                                 {guards.map(guard => {
-                                    return <li className=""><strong className="names">{guard}</strong>
+                                    return <li><a href="" className="nav navbar-brand names"
+                                                  onClick={this.showGuardModal}> {guard}</a>
                                         <div className="feed-meta">
                                             <ul className="list-inline">
-                                                <li className="list-inline-item ">ere</li>
-                                                <li className="list-inline-item ">ere</li>
                                             </ul>
                                         </div>
                                     </li>
                                 })}
+                                <a href="" className="nav navbar-brand names"
+                                   onClick={this.showGuardModal}> Sean</a>
                             </ul>
                         </div>
                         <div className="col-4 col-md-4 col-xl-4 offset-1 bd-content">
@@ -206,14 +248,14 @@ class GuardsHome extends Component {
                             <br/>
                             <strong>Location: </strong>{this.state.location ? this.state.location.label : 'no location set'}
                         </div>
+                        <GuardModal show={showGuardModal} onClose={this.closeGuardModal}/>
                     </div>
                 </div>
-                <
-                /div>)
+            </div>)
 
-                }
-                }
+    }
+}
 
 
-                export default GuardsHome
+export default GuardsHome
 

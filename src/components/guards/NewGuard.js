@@ -31,12 +31,13 @@ class NewGuard extends Component {
             cellphone: '',
             postal_address: '',
             location: '',
-            gross: '',
-            paye: '',
-            nssf: '',
-            nhif: '',
-            loans: '',
-            others: '',
+            gross: 0,
+            nssf: 0,
+            paye: 0,
+            nhif: 0,
+            contract: '',
+            loans: 0,
+            others: 0,
             display: 'personal',
             errors: {},
             isLoading: false,
@@ -51,8 +52,12 @@ class NewGuard extends Component {
         this.forwardToPaymentDetails = this.forwardToPaymentDetails.bind(this)
         this.backToPaymentDetails = this.backToPaymentDetails.bind(this)
         this.handleLocationChange = this.handleLocationChange.bind(this)
+        // this.selectPaymentContract = this.selectPaymentContract.bind(this)
     }
 
+    // selectPaymentContract(e){
+    // this.setState({contract:e.target.value})
+    // }
     handleLocationChange = (location) => {
         this.setState({location})
     }
@@ -144,11 +149,11 @@ class NewGuard extends Component {
         if (!data.cellphone) {
             errors.cellphone = 'This field is required'
         }
-        if (data.cellphone.length<10|| data.cellphone.length>10) {
-            errors.cellphone = 'Phone number must be at 10 digits'
+        if (data.cellphone.length < 10 || data.cellphone.length > 10) {
+            errors.cellphone = 'Phone number must be 10 digits'
         }
         let {location} = this.state
-        location=location.value
+        location = location.value
         if (validator.isEmpty(location)) {
             errors.location = 'This field is required'
         }
@@ -162,6 +167,10 @@ class NewGuard extends Component {
         let errors = {}
         if (!data.gross) {
             errors.gross = 'This field is required'
+        }
+        if (!data.contract) {
+            errors.contract = 'This field is required'
+
         }
         return {
             errors,
@@ -217,6 +226,7 @@ class NewGuard extends Component {
                             cellphone: this.state.cellphone,
                             postal_address: this.state.postal_address,
                             location: this.state.location.value,
+                            contract: this.state.contract,
                             gross: this.state.gross,
                             paye: this.state.paye,
                             nssf: this.state.nssf,
@@ -240,17 +250,17 @@ class NewGuard extends Component {
                             employment_date: '',
                             password: '',
                             passwordConfirmation: '',
-                            message: '',
                             email: '',
                             cellphone: '',
                             postal_address: '',
+                            contract:'',
                             location: '',
-                            gross: '',
-                            paye: '',
-                            nssf: '',
-                            nhif: '',
-                            loans: '',
-                            others: '',
+                            gross: 0,
+                            paye: 0,
+                            nssf: 0,
+                            nhif: 0,
+                            loans: 0,
+                            others: 0,
                             errors: {},
                             display: 'personal',
                             isLoading: false,
@@ -275,19 +285,32 @@ class NewGuard extends Component {
         const {show, onClose} = this.props
 
         const {
-            errors, isLoading, invalid, guard_id, surname, first_name, last_name, dob, gender, nationalID, employment_date, password, passwordConfirmation, display, message, email, cellphone, postal_address, location, gross, paye, nssf, nhif, loans, others
+            errors, isLoading, invalid, guard_id, surname, first_name, last_name, dob, gender, nationalID, employment_date, password, passwordConfirmation, display, message, email, cellphone, postal_address, location, gross, paye, nssf, nhif, loans, others, contract
         } = this.state
-        const err = () => {
-            for (let prop in errors) {
-                if (errors.hasOwnProperty(prop)) {
-                    return (<div className="alert alert-danger" role="alert">
-                        {errors[prop]}
-                    </div>)
-                }
-
-            }
-        }
-
+        const monthly = <TextFieldGroup
+            label="Mothly Salary"
+            type="number"
+            name="gross"
+            value={gross}
+            onChange={this.onChange}
+            error={errors.gross}
+        />
+        const weekly = <TextFieldGroup
+            label="Weekly Salary"
+            type="number"
+            name="gross"
+            value={gross}
+            onChange={this.onChange}
+            error={errors.gross}
+        />
+        const hourly = <TextFieldGroup
+            label="Hourly rate"
+            type="number"
+            name="gross"
+            value={gross}
+            onChange={this.onChange}
+            error={errors.gross}
+        />
         if (show) {
             return (
                 <Modal isOpen={show} toggle={onClose} size="lg" className="modal-dialog-centered">
@@ -445,7 +468,7 @@ class NewGuard extends Component {
                                                         value: location.id
                                                     }
                                                 })
-                                                return <Select.Creatable
+                                                return <Select
                                                     closeOnSelect={true}
                                                     onChange={this.handleLocationChange}
                                                     options={locationOptions}
@@ -478,14 +501,22 @@ class NewGuard extends Component {
                             </div>
                         </form>}
                         {display === 'payment' && <form onSubmit={this.onSubmit}>
-                            <TextFieldGroup
-                                label="Gross Salary"
-                                type="number"
-                                name="gross"
-                                value={gross}
-                                onChange={this.onChange}
-                                error={errors.gross}
-                            />
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label" htmlFor="contract">Payment Contract</label>
+                                <div className="col-sm-9">
+                                    <select className="form-control form-control-sm" id="contract" name="contract"
+                                            required="true" value={contract} onChange={this.onChange}>
+                                        <option>Select</option>
+                                        <option value="month">Monthly</option>
+                                        <option value="week">Weekly</option>
+                                        <option value="day">Daily</option>
+                                    </select>
+                                    {errors.payment && <div className="invalid-feedback">{errors.payment}</div>}
+                                </div>
+                            </div>
+                            {contract === 'month' && monthly}
+                            {contract === 'week' && weekly}
+                            {contract === 'day' && hourly}
                             <TextFieldGroup
                                 label="PAYE"
                                 type="number"
