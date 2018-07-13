@@ -3,7 +3,7 @@ import TextFieldGroup from "../../shared/TextFieldsGroup"
 import {findGuardsInLocation, locations, signin} from "../../shared/queries"
 import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
 import {dbPromise} from './indexDB'
-import {Query} from "graphql-react"
+import {Consumer, Query} from "graphql-react"
 import Select from 'react-select'
 import validator from "validator"
 import {isEmpty} from "lodash"
@@ -248,7 +248,7 @@ class GuardsHome extends Component {
                             <br/>
                             <strong>Location: </strong>{this.state.location ? this.state.location.label : 'no location set'}
                         </div>
-                        <GuardModal show={showGuardModal} onClose={this.closeGuardModal}/>
+                        <Consumer>{graphql =>  <GuardModal graphql={graphql} show={showGuardModal} onClose={this.closeGuardModal}/>}</Consumer>
                     </div>
                 </div>
             </div>)

@@ -82,8 +82,8 @@ date
 }
 }`
 const signout=`
-mutation($guard_id:Int!,$signin:String!,$date:String!){
-signout(guard_id:$guard_id,signin:$signin,date:$date){
+mutation($guard_id:Int!,$signout:String!,$date:String!){
+signout(guard_id:$guard_id,signout:$signout,date:$date){
 id
 guard_id
 signin
