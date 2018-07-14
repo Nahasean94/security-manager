@@ -8,7 +8,9 @@ import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
 import validator from '../../../node_modules/validator/index.js'
 import classnames from "classnames"
-
+import Menu from './Menu'
+import PropTypes from "prop-types"
+import ApplyForRetire from "./ApplyForRetire"
 class ApplyForLeave extends Component {
     constructor(props) {
         super(props)
@@ -123,24 +125,11 @@ class ApplyForLeave extends Component {
         const messageError = errors.message
         return (
             <div className="container-fluid">
-                <div className="row flex-xl-nowrap">
-                    <div className="col-2 col-md-2 ">
-                        {/*<h3>Signed in</h3>*/}
-                        {/*<ul className="list-unstyled">*/}
-                        {/*{guards.map(guard => {*/}
-                        {/*return <li><a href="" className="nav navbar-brand names"*/}
-                        {/*onClick={this.showGuardModal}> {guard}</a>*/}
-                        {/*<div className="feed-meta">*/}
-                        {/*<ul className="list-inline">*/}
-                        {/*</ul>*/}
-                        {/*</div>*/}
-                        {/*</li>*/}
-                        {/*})}*/}
-                        {/*<a href="" className="nav navbar-brand names"*/}
-                        {/*onClick={this.showGuardModal}> Sean</a>*/}
-                        {/*</ul>*/}
+                <div className="row">
+                    <div className="col-sm-2 col-md-2 bd-sidebar">
+                      <Menu router={this.context.router} active="leave"/>
                     </div>
-                    <div className="col-7 col-md-7 col-xl-7 bd-content">
+                    <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
                         <h2>Apply for leave</h2>
                             <form onSubmit={this.onSubmit}>
                                 <TextFieldGroup
@@ -172,7 +161,7 @@ class ApplyForLeave extends Component {
                                 <div className="form-group row">
                                     <div className="col-sm-5 offset-sm-3">
                                         <input type="submit" value="Apply"
-                                               className="form-control btn btn-secondary btn-sm "/>
+                                               className="form-control btn btn-dark btn-sm "/>
                                     </div>
                                     {/*<Dropdown group  isOpen={this.state.dropdownOpen} size="sm"*/}
                                     {/*toggle={this.toggle}>*/}
@@ -196,7 +185,9 @@ class ApplyForLeave extends Component {
 
     }
 }
-
+ApplyForLeave.contextTypes={
+    router:PropTypes.object.isRequired
+}
 
 export default ApplyForLeave
 

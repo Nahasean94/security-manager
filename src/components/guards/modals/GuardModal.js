@@ -154,7 +154,7 @@ class GuardModal extends React.Component {
                             <div className="form-group row">
                                 <div className="col-sm-9 offset-sm-3">
                                     <input type="submit" value="Sign out"
-                                           className="form-control btn btn-secondary btn-sm "/>
+                                           className="form-control btn btn-dark btn-sm "/>
                                 </div>
 
                             </div>

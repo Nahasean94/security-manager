@@ -9,9 +9,9 @@ import bcrypt from 'bcryptjs-then'
 import validator from '../../../node_modules/validator/index.js'
 import classnames from "classnames"
 import Menu from './Menu'
-import GuardsHome from "./GuardsHome"
 import PropTypes from "prop-types"
-class ApplyForRetire extends Component {
+import ApplyForLeave from "./ApplyForLeave"
+class Reports extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -127,57 +127,11 @@ class ApplyForRetire extends Component {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-2 col-md-2 bd-sidebar">
-                        <Menu router={this.context.router} active="retire"/>
+                        <Menu  router={this.context.router} active="reports"/>
                     </div>
                     <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
-                        <h2>Apply for Retire</h2>
-                        <form onSubmit={this.onSubmit}>
-                            <TextFieldGroup
-                                label="Starting date"
-                                type="date"
-                                name="date"
-                                value={this.state.date}
-                                onChange={this.onChange}
-                                error={errors.date}
-                            />
-                            <TextFieldGroup
-                                label="Duration of leave(days)"
-                                type="number"
-                                name="duration"
-                                value={this.state.duration}
-                                onChange={this.onChange}
-                                error={errors.duration}
-                            />
-                            <div className="form-group row">
-                                <div className="col-sm-3"><label htmlFor="message">Reason for leave</label>
-                                </div>
-                                <div className="col-sm-9">
-                        <textarea name="message" onChange={this.onChange}
-                                  className={classnames("form-control form-control-sm", {"is-invalid": messageError})}
-                                  rows="3" id="message" onClick={this.onChange} value={this.state.message}/>
-                                    {messageError && <div className="invalid-feedback">{messageError}</div>}
-                                </div>
-                            </div>
-                            <div className="form-group row">
-                                <div className="col-sm-5 offset-sm-3">
-                                    <input type="submit" value="Apply"
-                                           className="form-control btn btn-dark btn-sm "/>
-                                </div>
-                                {/*<Dropdown group  isOpen={this.state.dropdownOpen} size="sm"*/}
-                                {/*toggle={this.toggle}>*/}
-                                {/*<DropdownToggle caret>*/}
-                                {/*More actions*/}
-                                {/*</DropdownToggle>*/}
-                                {/*<DropdownMenu>*/}
-                                {/*<DropdownItem>View inbox</DropdownItem>*/}
-                                {/*<DropdownItem divider/>*/}
-                                {/*<DropdownItem>Apply for leave</DropdownItem>*/}
-                                {/*<DropdownItem divider/>*/}
-                                {/*<DropdownItem>Apply for retirement</DropdownItem>*/}
-                                {/*</DropdownMenu>*/}
-                                {/*</Dropdown>*/}
-                            </div>
-                        </form>
+                        <h2>Reports information</h2>
+
                     </div>
                 </div>
             </div>
@@ -185,9 +139,9 @@ class ApplyForRetire extends Component {
 
     }
 }
-ApplyForRetire.contextTypes={
+Reports.contextTypes={
     router:PropTypes.object.isRequired
 }
 
-export default ApplyForRetire
+export default Reports
 

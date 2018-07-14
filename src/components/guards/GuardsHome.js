@@ -10,14 +10,7 @@ import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
 import GuardModal from "./modals/GuardModal"
 import PropTypes from 'prop-types'
-
-import {
-    Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-} from "reactstrap"
+import {Nav, NavItem, NavLink} from "reactstrap"
 
 let locationOptions
 
@@ -49,6 +42,7 @@ class GuardsHome extends Component {
         this.toggle = this.toggle.bind(this)
         this.applyForLeave = this.applyForLeave.bind(this)
     }
+
     changeDisplayToAuthorize(e) {
         e.preventDefault()
         this.setState({display: 'authorize'})
@@ -139,9 +133,10 @@ class GuardsHome extends Component {
         }
         return isValid
     }
-    applyForLeave(e){
+
+    applyForLeave(e) {
         e.preventDefault()
-        this.context.router.history.push('/leave')
+        this.context.router.history.push('/guards/profile')
     }
 
 
@@ -218,19 +213,15 @@ class GuardsHome extends Component {
                     <div className="row flex-xl-nowrap">
                         <div className="col-2 col-md-2 bd-sidebar">
                             <h3>Signed in</h3>
-                            <ul className="list-unstyled">
+                            <Nav pills vertical className="bd-links" id="bd-docs-nav">
                                 {guards.map(guard => {
-                                    return <li><a href="" className="nav navbar-brand names"
-                                                  onClick={this.showGuardModal}> {guard}</a>
-                                        <div className="feed-meta">
-                                            <ul className="list-inline">
-                                            </ul>
-                                        </div>
-                                    </li>
+                                    return <NavItem>
+                                        <NavLink href="" onClick={this.showGuardModal}> {guard}</NavLink>
+                                    </NavItem>
                                 })}
-                                <a href="" className="nav navbar-brand names"
-                                   onClick={this.showGuardModal}> Sean</a>
-                            </ul>
+                                <NavItem> <NavLink href="" onClick={this.showGuardModal}> Sean</NavLink>
+                                </NavItem>
+                            </Nav>
                         </div>
                         <div className="col-4 col-md-4 col-xl-4 offset-1 bd-content">
                             <div className="sign-in-form">
@@ -254,21 +245,14 @@ class GuardsHome extends Component {
                                     <div className="form-group row">
                                         <div className="col-sm-5 offset-sm-3">
                                             <input type="submit" value="Sign in"
-                                                   className="form-control btn btn-secondary btn-sm "/>
+                                                   className="form-control btn btn-dark btn-sm "/>
                                         </div>
-                                        <Dropdown group  isOpen={this.state.dropdownOpen} size="sm"
-                                                  toggle={this.toggle}>
-                                            <DropdownToggle caret>
-                                                More actions
-                                            </DropdownToggle>
-                                            <DropdownMenu>
-                                                <DropdownItem onClick={this.applyForLeave}>Apply for leave</DropdownItem>
-                                                <DropdownItem divider/>
-                                                <DropdownItem> View inbox</DropdownItem>
-                                                <DropdownItem divider/>
-                                                <DropdownItem>Apply for retirement</DropdownItem>
-                                            </DropdownMenu>
-                                        </Dropdown>
+                                        <div className="col-sm-4">
+                                            <button className="btn btn-dark btn-sm form-control "
+                                                    onClick={this.applyForLeave}>Profile
+                                            </button>
+                                        </div>
+
                                     </div>
                                 </form>
                             </div>
@@ -307,15 +291,16 @@ class GuardsHome extends Component {
                             <br/>
                             <strong>Location: </strong>{this.state.location ? this.state.location.label : 'no location set'}
                         </div>
-                        <Consumer>{graphql =>  <GuardModal graphql={graphql} show={showGuardModal} onClose={this.closeGuardModal}/>}</Consumer>
+                        <Consumer>{graphql => <GuardModal graphql={graphql} show={showGuardModal}
+                                                          onClose={this.closeGuardModal}/>}</Consumer>
                     </div>
                 </div>
             </div>)
     }
 }
 
-GuardsHome.contextTypes={
-    router:PropTypes.object.isRequired
+GuardsHome.contextTypes = {
+    router: PropTypes.object.isRequired
 }
 export default GuardsHome
 

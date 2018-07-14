@@ -45,17 +45,17 @@ class NavigationBar extends React.Component {
 
         const userLinks = (<div className="navbar-nav flex-row ml-md-auto">
             {/*<a className="nav-item nav-link" href="" > </a>*/}
-            <Link to="/" className="nav-item nav-link" onClick={this.logout}>Logout</Link>
+            <Link to="/" className="nav-item nav-link-custom" onClick={this.logout}>Logout</Link>
             {/*{token && <Link to="/" className="nav-item nav-link">Dashboard</Link>}*/}
         </div>)
 
         const guestLinks = (
             <div className="navbar-nav flex-row ml-md-auto">
-                <a href="" className="nav-item nav-link" onClick={this.showSigninPageModal}>Sign in</a>
+                <a href="" className="nav-item nav-link-custom" onClick={this.showSigninPageModal}>Sign in</a>
             </div>)
 
         return (
-            <nav className="navbar navbar-expand-sm navbar-light bg-light fixed-top">
+            <nav className="navbar navbar-expand-sm bg-dark fixed-top">
                 <Link className="navbar-brand" to="/">
                     Security Manager
                 </Link>
@@ -65,7 +65,7 @@ class NavigationBar extends React.Component {
                     {/*<span className="navbar-toggler-icon"></span>*/}
                 {/*</button>*/}
 
-                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div className="navbar-collapse" id="navbarNavAltMarkup">
                     {isAuthenticated ? userLinks : guestLinks}
                 </div>
                  <SigninPage show={showSigninPageModal} onClose={this.closeSigninPageModal}/>
