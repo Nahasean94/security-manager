@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import validator from 'validator'
 import {isEmpty} from 'lodash'
 import TextFieldGroup from './../../../shared/TextFieldsGroup'
-import  {setLoginToken} from "../../../actions/loginActions"
+import {setLoginToken} from "../../../actions/loginActions"
 import {connect} from 'react-redux'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import {login} from '../../../shared/queries'
@@ -103,7 +103,9 @@ class LoginForm extends React.Component {
         // }
         return (
             <form onSubmit={this.onSubmit}>
-                <h3>Login</h3>
+                <div className="row">
+                    <h2 className="offset-sm-4">Login</h2>
+                </div>
                 {errors.form && <div className="alert alert-danger">{errors.form}</div>}
                 <TextFieldGroup
                     label="Email"
@@ -122,10 +124,12 @@ class LoginForm extends React.Component {
                     onChange={this.onChange}
                     error={errors.password}
                 />
-                <div className="form-group">
-                    <button disabled={isLoading || invalid} className="btn btn-primary btn-sm"
-                            type="submit">Login
-                    </button>
+                <div className="form-group row">
+                    <div className="col-sm-9 offset-3">
+                        <button disabled={isLoading || invalid} className="btn btn-dark btn-sm form-control"
+                                type="submit">Login
+                        </button>
+                    </div>
                 </div>
             </form>
         )

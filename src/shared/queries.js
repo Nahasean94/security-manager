@@ -91,9 +91,9 @@ signout
 date
 }
 }`
-const newMessage=`
+const newLeaveRequest=`
 mutation($author:String!,$message_type:String!,$body:String!,$account_type:String!){
-  newMessage(author:$author,message_type:$message_type,body:$body,account_type:$account_type){
+  newLeaveRequest(author:$author,message_type:$message_type,body:$body,account_type:$account_type){
     id
     message_type
     author{
@@ -114,6 +114,19 @@ mutation($author:String!,$message_type:String!,$body:String!,$account_type:Strin
     
   }
 }`
+const newReport=`
+mutation($guard_id:Int!,$report:String!){
+  newReport(guard_id:$guard_id,report:$report){
+    id
+    report
+    guard_id{
+      first_name
+      last_name
+      profile_picture
+    }
+    timestamp
+  }
+}`
 
 export {
     addLocation,
@@ -126,5 +139,6 @@ export {
     person,
     signin,
     signout,
-    newMessage
+    newLeaveRequest,
+    newReport
 }

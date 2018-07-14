@@ -12,10 +12,10 @@ export default ({show, onClose}) => {
                 <ModalBody>
                     <div className='container-fluid'>
                         <div className='row'>
-                            <div className="col-sm-4">
+                            <div className="col-sm-5">
                                 <LoginPage onClose={onClose}/>
                             </div>
-                            <div className="col-sm-6 offset-2">
+                            <div className="col-sm-6 offset-1">
                                 <SignupPage/>
                             </div>
                         </div>

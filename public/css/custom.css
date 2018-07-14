@@ -37,10 +37,15 @@ body {
 .flat, .btn, .form-control, .nav-pills .nav-link {
     border-radius: unset;
 }
+.form-control:focus{
+    border-color: black;
+    box-shadow: -1px 1px 11px -1px black;
+}
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link{
     color:white;
     background-color: black;
     font-size: 1.2rem;
+    width: 100%;
 }
 .nav-link{
     color: black;
@@ -54,6 +59,7 @@ body {
 .bg-dark{
     background-color: #000!important;
 }
+
 /*.alert-dark{*/
     /*background-color: #000;*/
     /*color: #fff;*/

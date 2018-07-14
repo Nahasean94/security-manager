@@ -9,7 +9,6 @@ import bcrypt from 'bcryptjs-then'
 import validator from '../../../../node_modules/validator/index.js'
 import classnames from "classnames"
 import Menu from '../Menu'
-import ApplyForRetire from "../retire/ApplyForRetire"
 import PropTypes from "prop-types"
 class Inbox extends Component {
     constructor(props) {

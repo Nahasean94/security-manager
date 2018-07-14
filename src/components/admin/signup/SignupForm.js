@@ -115,7 +115,7 @@ class SignupForm extends React.Component {
             return <p>Creating account…</p>
         }
         if (message) {
-            return <p>{message}</p>
+            return <div className="alert alert-dark">{message}</div>
         }
         return (
             <form onSubmit={this.onSubmit}>
@@ -154,10 +154,12 @@ class SignupForm extends React.Component {
                     error={errors.passwordConfirmation}
                 />
 
-                <div className="form-group">
-                    <button disabled={this.state.isLoading || this.state.invalid} className="btn btn-primary btn-sm"
+                <div className="form-group row">
+                    <div className="col-sm-9 offset-3">
+                    <button disabled={this.state.isLoading || this.state.invalid} className="btn btn-dark btn-sm form-control "
                             type="submit">Sign up
                     </button>
+                    </div>
                 </div>
             </form>
         )

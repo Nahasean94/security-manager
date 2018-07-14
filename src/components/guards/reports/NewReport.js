@@ -1,27 +1,26 @@
 import React, {Component} from 'react'
-import TextFieldGroup from "../../../shared/TextFieldsGroup"
-import {signin} from "../../../shared/queries"
+import {newReport} from "../../../shared/queries"
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {dbPromise} from '../indexDB'
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
-import bcrypt from 'bcryptjs-then'
 import validator from '../../../../node_modules/validator/index.js'
 import classnames from "classnames"
 import Menu from '../Menu'
 import PropTypes from "prop-types"
-import ApplyForLeave from "../leave/ApplyForLeave"
-class NewReport extends Component {
+import  CurrentGuard from '../../../shared/CurrentGuard'
+
+
+
+class ApplyForLeave extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            date: '',
-            duration: '',
-            message: '',
-            guards: [],
+            report: '',
+            response:'',
             errors: {},
             isLoading: false,
             invalid: false,
+
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -34,11 +33,11 @@ class NewReport extends Component {
 
     validateInfo(data) {
         let errors = {}
-        if (validator.isEmpty(data.duration)) {
-            errors.duration = 'This field is required'
+        if (validator.isEmpty(data.report)) {
+            errors.report = 'This field is required'
         }
-        if (!data.date) {
-            errors.date = 'This field is required'
+        if (data.report.length<10) {
+            errors.report = 'Report must be more than 10 characters'
         }
         return {
             errors,
@@ -58,62 +57,22 @@ class NewReport extends Component {
     onSubmit(e) {
         e.preventDefault()
         if (this.isValid()) {
-            const {date, duration} = this.state
-            dbPromise.then(db => {
-                let tx = db.transaction('guards', 'readonly')
-                let store = tx.objectStore('guards')
-                return store.get(Number(date))
-            }).then(guard => {
-                if (guard) {
-                    bcrypt.compare(duration, guard.duration).then(valid => {
-                        if (valid) {
-                            this.setState({
-                                date: '',
-                                duration: '',
-                                errors: {},
-                                guards: [...this.state.guards, guard.first_name]
-                            })
-                            const signedIn = {
-                                date: date,
-                                signin: new Date().toLocaleString(),
-                                signout: '',
-                                date: new Date().toLocaleDateString()
-                            }
-                            dbPromise.then(db => {
-                                let tx = db.transaction('attendance', 'readwrite')
-                                let store = tx.objectStore('attendance')
-                                return store.add(signedIn)
-                            }).then(added => {
-                                this.props.graphql
-                                    .query({
-                                        fetchOptionsOverride: fetchOptionsOverride,
-                                        resetOnLoad: true,
-                                        operation: {
-                                            variables: {
-                                                date: signedIn.date,
-                                                signin: signedIn.signin,
-                                                date: signedIn.date
-                                            },
-                                            query: signin
-                                        }
-                                    })
-                                    .request.then(({data}) => {
-                                        if (data) {
-                                            console.log(data)
-                                        }
-                                    }
-                                )
-                            })
-                        } else {
-                            let errors = {}
-                            errors.duration = 'Incorrect duration'
-                            this.setState({errors})
-                        }
+            this.props.graphql.query({
+                fetchOptionsOverride: fetchOptionsOverride,
+                resetOnLoad: true,
+                operation: {
+                    variables: {
+                        guard_id:Number(CurrentGuard.getGuardId()),
+                        report:this.state.report,
+                    },
+                    query: newReport
+                }
+            }).request.then(({data}) => {
+                if (data) {
+                    this.setState({
+                        report: '',
+                        response:'Message successfully sent',
                     })
-                } else {
-                    let errors = {}
-                    errors.date = 'Guard ID Not Found'
-                    this.setState({errors})
                 }
             })
         }
@@ -121,19 +80,33 @@ class NewReport extends Component {
 
 
     render() {
-        const {guards, errors, isLoading, showGuardModal} = this.state
-        const messageError = errors.message
+        const { errors, response} = this.state
+        const messageError = errors.report
         return (
             <div className="container-fluid">
                 <div className="row">
+
                     <div className="col-sm-2 col-md-2 bd-sidebar">
-                        <Menu  router={this.context.router} active="reports"/>
+                        <Menu router={this.context.router} active="reports"/>
                     </div>
                     <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
+                        {response && <div className="alert alert-dark">{response}</div>}
                         <div className="row">
-                            <h2 className="offset-sm-4">Report information</h2>
+                            <h2 className="offset-sm-4">New report</h2>
                         </div>
+                        <form onSubmit={this.onSubmit}>
+                            <div className="form-group">
+                        <textarea name="report" onChange={this.onChange}
+                                  className={classnames("form-control", {"is-invalid": messageError})} rows="3" id="report" onClick={this.onChange} value={this.state.report}/>
+                                    {messageError && <div className="invalid-feedback">{messageError}</div>}
+                                </div>
+                            <div className="form-group row">
+                                <div className="col-sm-5 offset-sm-3">
+                                    <input type="submit" value="Submit" className="form-control btn btn-dark btn-sm "/>
+                                </div>
 
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -141,9 +114,10 @@ class NewReport extends Component {
 
     }
 }
-NewReport.contextTypes={
-    router:PropTypes.object.isRequired
+
+ApplyForLeave.contextTypes = {
+    router: PropTypes.object.isRequired
 }
 
-export default NewReport
+export default ApplyForLeave
 
