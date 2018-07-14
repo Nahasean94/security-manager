@@ -1,17 +1,17 @@
 import React, {Component} from 'react'
-import TextFieldGroup from "../../shared/TextFieldsGroup"
-import {signin} from "../../shared/queries"
-import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
-import {dbPromise} from './indexDB'
+import TextFieldGroup from "../../../shared/TextFieldsGroup"
+import {signin} from "../../../shared/queries"
+import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
+import {dbPromise} from '../indexDB'
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
-import validator from '../../../node_modules/validator/index.js'
+import validator from '../../../../node_modules/validator/index.js'
 import classnames from "classnames"
-import Menu from './Menu'
+import Menu from '../Menu'
+import ApplyForRetire from "../retire/ApplyForRetire"
 import PropTypes from "prop-types"
-import ApplyForLeave from "./ApplyForLeave"
-class Reports extends Component {
+class Inbox extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -127,10 +127,11 @@ class Reports extends Component {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-2 col-md-2 bd-sidebar">
-                        <Menu  router={this.context.router} active="reports"/>
+                        <Menu router={this.context.router} active="inbox"/>
+
                     </div>
                     <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
-                        <h2>Reports information</h2>
+                        <h2>Inbox for various notifications</h2>
 
                     </div>
                 </div>
@@ -139,9 +140,9 @@ class Reports extends Component {
 
     }
 }
-Reports.contextTypes={
+
+Inbox.contextTypes={
     router:PropTypes.object.isRequired
 }
-
-export default Reports
+export default Inbox
 

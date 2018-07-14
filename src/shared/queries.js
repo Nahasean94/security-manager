@@ -91,6 +91,29 @@ signout
 date
 }
 }`
+const newMessage=`
+mutation($author:String!,$message_type:String!,$body:String!,$account_type:String!){
+  newMessage(author:$author,message_type:$message_type,body:$body,account_type:$account_type){
+    id
+    message_type
+    author{
+      username
+      profile_picture
+    }
+    body
+    timestamp
+    replies{
+      id
+    author{
+      username
+      profile_picture
+    }
+    body
+    timestamp
+    }
+    
+  }
+}`
 
 export {
     addLocation,
@@ -102,5 +125,6 @@ export {
     findGuardsInLocation,
     person,
     signin,
-    signout
+    signout,
+    newMessage
 }

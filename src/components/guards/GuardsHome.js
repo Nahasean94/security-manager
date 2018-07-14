@@ -10,6 +10,8 @@ import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
 import GuardModal from "./modals/GuardModal"
 import PropTypes from 'prop-types'
+import  CurrentGuard from '../../shared/CurrentGuard'
+
 import {Nav, NavItem, NavLink} from "reactstrap"
 
 let locationOptions
@@ -40,7 +42,7 @@ class GuardsHome extends Component {
         this.changeDisplayToLeave = this.changeDisplayToLeave.bind(this)
         this.changeDisplayToRetire = this.changeDisplayToRetire.bind(this)
         this.toggle = this.toggle.bind(this)
-        this.applyForLeave = this.applyForLeave.bind(this)
+        this.goToProfile = this.goToProfile.bind(this)
     }
 
     changeDisplayToAuthorize(e) {
@@ -134,9 +136,12 @@ class GuardsHome extends Component {
         return isValid
     }
 
-    applyForLeave(e) {
+    goToProfile(e) {
         e.preventDefault()
-        this.context.router.history.push('/guards/profile')
+        if (this.isValid()) {
+            CurrentGuard.setGuardId(String(this.state.guard_id))
+            this.context.router.history.push('/guards/profile')
+        }
     }
 
 
@@ -249,7 +254,7 @@ class GuardsHome extends Component {
                                         </div>
                                         <div className="col-sm-4">
                                             <button className="btn btn-dark btn-sm form-control "
-                                                    onClick={this.applyForLeave}>Profile
+                                                    onClick={this.goToProfile}>Profile
                                             </button>
                                         </div>
 

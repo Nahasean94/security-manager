@@ -1,17 +1,17 @@
 import React, {Component} from 'react'
-import TextFieldGroup from "../../shared/TextFieldsGroup"
-import {signin} from "../../shared/queries"
-import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
-import {dbPromise} from './indexDB'
+import TextFieldGroup from "../../../shared/TextFieldsGroup"
+import {signin} from "../../../shared/queries"
+import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
+import {dbPromise} from '../indexDB'
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
-import validator from '../../../node_modules/validator/index.js'
+import validator from '../../../../node_modules/validator/index.js'
 import classnames from "classnames"
-import Menu from './Menu'
-import ApplyForRetire from "./ApplyForRetire"
+import Menu from '../Menu'
 import PropTypes from "prop-types"
-class Inbox extends Component {
+import ApplyForLeave from "../leave/ApplyForLeave"
+class NewReport extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -127,11 +127,12 @@ class Inbox extends Component {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-2 col-md-2 bd-sidebar">
-                        <Menu router={this.context.router} active="inbox"/>
-
+                        <Menu  router={this.context.router} active="reports"/>
                     </div>
                     <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
-                        <h2>Inbox for various notifications</h2>
+                        <div className="row">
+                            <h2 className="offset-sm-4">Report information</h2>
+                        </div>
 
                     </div>
                 </div>
@@ -140,9 +141,9 @@ class Inbox extends Component {
 
     }
 }
-
-Inbox.contextTypes={
+NewReport.contextTypes={
     router:PropTypes.object.isRequired
 }
-export default Inbox
+
+export default NewReport
 
