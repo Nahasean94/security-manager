@@ -11,7 +11,6 @@ import bcrypt from 'bcryptjs-then'
 import GuardModal from "./modals/GuardModal"
 import PropTypes from 'prop-types'
 import  CurrentGuard from '../../shared/CurrentGuard'
-
 import {Nav, NavItem, NavLink} from "reactstrap"
 
 let locationOptions
@@ -228,7 +227,7 @@ class GuardsHome extends Component {
                                 </NavItem>
                             </Nav>
                         </div>
-                        <div className="col-4 col-md-4 col-xl-4 offset-1 bd-content">
+                        <div className="col-4 col-md-4 col-xl-4 offset-1 bd-content no-float">
                             <div className="sign-in-form">
                                 <form onSubmit={this.onSubmit}>
                                     <TextFieldGroup

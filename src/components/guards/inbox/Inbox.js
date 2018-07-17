@@ -1,127 +1,22 @@
 import React, {Component} from 'react'
-import TextFieldGroup from "../../../shared/TextFieldsGroup"
-import {signin} from "../../../shared/queries"
+import {getInbox,} from "../../../shared/queries"
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {dbPromise} from '../indexDB'
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
-import bcrypt from 'bcryptjs-then'
-import validator from '../../../../node_modules/validator/index.js'
-import classnames from "classnames"
 import Menu from '../Menu'
 import PropTypes from "prop-types"
+import CurrentGuard from "../../../shared/CurrentGuard"
+
 class Inbox extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            date: '',
-            duration: '',
-            message: '',
-            guards: [],
-            errors: {},
-            isLoading: false,
-            invalid: false,
-        }
-        this.onSubmit = this.onSubmit.bind(this)
-        this.onChange = this.onChange.bind(this)
-    }
-
-    onChange(e) {
-        this.setState({[e.target.name]: e.target.value})
 
     }
 
-    validateInfo(data) {
-        let errors = {}
-        if (validator.isEmpty(data.duration)) {
-            errors.duration = 'This field is required'
-        }
-        if (!data.date) {
-            errors.date = 'This field is required'
-        }
-        return {
-            errors,
-            isValid: isEmpty(errors)
-        }
-    }
-
-    isValid() {
-        const {errors, isValid} = this.validateInfo(this.state)
-        if (!isValid) {
-            this.setState({errors})
-        }
-        return isValid
-    }
-
-
-    onSubmit(e) {
-        e.preventDefault()
-        if (this.isValid()) {
-            const {date, duration} = this.state
-            dbPromise.then(db => {
-                let tx = db.transaction('guards', 'readonly')
-                let store = tx.objectStore('guards')
-                return store.get(Number(date))
-            }).then(guard => {
-                if (guard) {
-                    bcrypt.compare(duration, guard.duration).then(valid => {
-                        if (valid) {
-                            this.setState({
-                                date: '',
-                                duration: '',
-                                errors: {},
-                                guards: [...this.state.guards, guard.first_name]
-                            })
-                            const signedIn = {
-                                date: date,
-                                signin: new Date().toLocaleString(),
-                                signout: '',
-                                date: new Date().toLocaleDateString()
-                            }
-                            dbPromise.then(db => {
-                                let tx = db.transaction('attendance', 'readwrite')
-                                let store = tx.objectStore('attendance')
-                                return store.add(signedIn)
-                            }).then(added => {
-                                this.props.graphql
-                                    .query({
-                                        fetchOptionsOverride: fetchOptionsOverride,
-                                        resetOnLoad: true,
-                                        operation: {
-                                            variables: {
-                                                date: signedIn.date,
-                                                signin: signedIn.signin,
-                                                date: signedIn.date
-                                            },
-                                            query: signin
-                                        }
-                                    })
-                                    .request.then(({data}) => {
-                                        if (data) {
-                                            console.log(data)
-                                        }
-                                    }
-                                )
-                            })
-                        } else {
-                            let errors = {}
-                            errors.duration = 'Incorrect duration'
-                            this.setState({errors})
-                        }
-                    })
-                } else {
-                    let errors = {}
-                    errors.date = 'Guard ID Not Found'
-                    this.setState({errors})
-                }
-            })
-        }
-    }
 
 
     render() {
-        const {guards, errors, isLoading, showGuardModal} = this.state
-        const messageError = errors.message
+        console.log(CurrentGuard.getGuardId())
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -130,8 +25,30 @@ class Inbox extends Component {
 
                     </div>
                     <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
-                        <h2>Inbox for various notifications</h2>
-
+                        <Query
+                            loadOnMount
+                            loadOnReset
+                            fetchOptionsOverride={fetchOptionsOverride}
+                            variables={{guard_id:CurrentGuard.getGuardId()}}
+                            query={getInbox}
+                        >
+                            {({loading, data}) => {
+                                if (data) {
+                                    if (data.getInbox && data.getInbox.length > 0) {
+                                        return (<ul>
+                                            {data.getInbox.map(inbox=>{
+                                                return <li>{inbox.author.username}<br/>{inbox.body}</li>
+                                            })}
+                                        </ul>)
+                                    }
+                                }
+                                else if (loading) {
+                                    return <p>Loading…</p>
+                                }
+                                return <p>Loading failed.</p>
+                            }
+                            }
+                        </Query>
                     </div>
                 </div>
             </div>
@@ -140,8 +57,8 @@ class Inbox extends Component {
     }
 }
 
-Inbox.contextTypes={
-    router:PropTypes.object.isRequired
+Inbox.contextTypes = {
+    router: PropTypes.object.isRequired
 }
 export default Inbox
 

@@ -12,15 +12,25 @@ body {
 
 .bd-sidebar {
     border-right: 1px solid rgba(0, 0, 0, .1);
-    height: 100%;
+    padding-bottom: 9999px;
+    margin-bottom: -9999px;
+    overflow: hidden;
 }
 .bd-location{
     border-left: 1px solid rgba(0, 0, 0, .1);
+    padding-bottom: 9999px;
+    margin-bottom: -9999px;
+    overflow: hidden;
+
 }
 
 /*.bd-content {*/
     /*margin-top: 10%;*/
 /*}*/
+.bd-content {
+    overflow: hidden;
+}
+
 
 .sign-in-form {
     padding: 10px;

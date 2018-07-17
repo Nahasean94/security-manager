@@ -127,6 +127,19 @@ mutation($guard_id:Int!,$report:String!){
     timestamp
   }
 }`
+const getInbox=`
+query($guard_id:String!){
+    getInbox(guard_id:$guard_id){
+        id
+        body
+        author{
+            username
+            profile_picture
+                }
+        timestamp
+    }
+}`
+
 
 export {
     addLocation,
@@ -140,5 +153,7 @@ export {
     signin,
     signout,
     newLeaveRequest,
-    newReport
+    newReport,
+    getInbox
+
 }
