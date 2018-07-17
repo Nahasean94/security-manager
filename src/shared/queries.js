@@ -138,6 +138,26 @@ query($guard_id:String!){
         timestamp
     }
 }`
+const getLeaveRequest=`
+query($id:ID!){
+    getLeaveRequest(id:$id){
+        id
+        body
+        author{
+            username
+            profile_picture
+                }
+                replies{
+                body
+                timestamp
+                author{
+                username
+                profile_picture
+                }
+                }
+        timestamp
+    }
+}`
 
 
 export {
@@ -153,6 +173,7 @@ export {
     signout,
     newLeaveRequest,
     newReport,
-    getInbox
+    getInbox,
+    getLeaveRequest
 
 }

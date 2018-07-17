@@ -48,11 +48,18 @@ body {
 
 #body {
     margin-top: 50px;
-
 }
 
 .inbox-list:hover {
     background-color: #c7c8c9 !important;
+}
+.inbox-list-selected {
+    background-color: black;
+    color: white;
+    font-size: 1.1rem;
+}
+.view-leave{
+    align-items: center;
 }
 
 .inbox-list {

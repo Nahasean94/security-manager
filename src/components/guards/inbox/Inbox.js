@@ -7,16 +7,25 @@ import Menu from '../Menu'
 import PropTypes from "prop-types"
 import CurrentGuard from "../../../shared/CurrentGuard"
 import InboxView from "./InboxView"
+import LeaveView from "./LeaveView"
+import classnames from "classnames"
 
 class Inbox extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            leaveRequest: ''
+        }
+        this.onSelectLeaveRequest = this.onSelectLeaveRequest.bind(this)
+    }
 
+    onSelectLeaveRequest(leaveRequest) {
+        this.setState({leaveRequest})
     }
 
 
     render() {
-        console.log(CurrentGuard.getGuardId())
+       const {leaveRequest}=this.state
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -24,7 +33,7 @@ class Inbox extends Component {
                         <Menu router={this.context.router} active="inbox"/>
 
                     </div>
-                    <div className="col-sm-4 col-md-4 col-xl-4 bd-content">
+                    <div className="col-sm-5 col-md-5 col-xl-5 bd-content">
                         <Query
                             loadOnMount
                             loadOnReset
@@ -37,8 +46,8 @@ class Inbox extends Component {
                                     if (data.getInbox && data.getInbox.length > 0) {
                                         return (<ul className="list-unstyled ">
                                             {data.getInbox.map(inbox => {
-                                                return <li className="inbox-list">
-                                                    <InboxView inbox={inbox}/>
+                                                return <li className={classnames("inbox-list", {"inbox-list-selected": inbox.id===this.state.leaveRequest})}>
+                                                    <InboxView inbox={inbox} onSelectLeaveRequest={this.onSelectLeaveRequest}/>
                                                     {/*<hr className="inbox-list"/>*/}
                                                 </li>
                                             })}
@@ -54,6 +63,9 @@ class Inbox extends Component {
                             }
                             }
                         </Query>
+                    </div>
+                    <div className="col-sm-4 col-md-4 col-xl-4 bd-location">
+                        <LeaveView leaveRequest={leaveRequest}/>
                     </div>
                 </div>
             </div>
