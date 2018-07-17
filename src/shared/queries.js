@@ -92,10 +92,9 @@ date
 }
 }`
 const newLeaveRequest=`
-mutation($author:String!,$message_type:String!,$body:String!,$account_type:String!){
-  newLeaveRequest(author:$author,message_type:$message_type,body:$body,account_type:$account_type){
+mutation($author:String!,$body:String!,$account_type:String!){
+  newLeaveRequest(author:$author,body:$body,account_type:$account_type){
     id
-    message_type
     author{
       username
       profile_picture

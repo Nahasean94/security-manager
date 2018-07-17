@@ -227,7 +227,7 @@ class GuardsHome extends Component {
                                 </NavItem>
                             </Nav>
                         </div>
-                        <div className="col-4 col-md-4 col-xl-4 offset-1 bd-content no-float">
+                        <div className="col-4 col-md-4 col-xl-4 offset-2 bd-content no-float">
                             <div className="sign-in-form">
                                 <form onSubmit={this.onSubmit}>
                                     <TextFieldGroup
@@ -261,7 +261,7 @@ class GuardsHome extends Component {
                                 </form>
                             </div>
                         </div>
-                        <div className="col-sm-3 col-md-3 offset-2  bd-location">
+                        <div className="col-sm-2 col-md-2 offset-2 bd-location">
                             <h3>Select location</h3>
                             <Query
                                 loadOnMount

@@ -6,13 +6,13 @@ import {isEmpty} from "lodash"
 import Menu from '../Menu'
 import PropTypes from "prop-types"
 import CurrentGuard from "../../../shared/CurrentGuard"
+import InboxView from "./InboxView"
 
 class Inbox extends Component {
     constructor(props) {
         super(props)
 
     }
-
 
 
     render() {
@@ -24,22 +24,27 @@ class Inbox extends Component {
                         <Menu router={this.context.router} active="inbox"/>
 
                     </div>
-                    <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
+                    <div className="col-sm-4 col-md-4 col-xl-4 bd-content">
                         <Query
                             loadOnMount
                             loadOnReset
                             fetchOptionsOverride={fetchOptionsOverride}
-                            variables={{guard_id:CurrentGuard.getGuardId()}}
+                            variables={{guard_id: CurrentGuard.getGuardId()}}
                             query={getInbox}
                         >
                             {({loading, data}) => {
                                 if (data) {
                                     if (data.getInbox && data.getInbox.length > 0) {
-                                        return (<ul>
-                                            {data.getInbox.map(inbox=>{
-                                                return <li>{inbox.author.username}<br/>{inbox.body}</li>
+                                        return (<ul className="list-unstyled ">
+                                            {data.getInbox.map(inbox => {
+                                                return <li className="inbox-list">
+                                                    <InboxView inbox={inbox}/>
+                                                    {/*<hr className="inbox-list"/>*/}
+                                                </li>
                                             })}
                                         </ul>)
+                                    } else {
+                                        return <p>No items on your inbox</p>
                                     }
                                 }
                                 else if (loading) {

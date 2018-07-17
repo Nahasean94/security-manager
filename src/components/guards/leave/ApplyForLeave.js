@@ -69,7 +69,6 @@ class ApplyForLeave extends Component {
                 operation: {
                     variables: {
                         author:CurrentGuard.getGuardId(),
-                        message_type:'leave',
                         body:this.state.message,
                         account_type:'guard'
                     },
