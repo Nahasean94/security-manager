@@ -293,7 +293,7 @@ class Profile extends Component {
                                                                     <th scope="row">Deductions
                                                                     </th>
                                                                     {data.getGuardPaymentInfo.deductions.length && data.getGuardPaymentInfo.deductions.map(deduction => {
-                                                                        <tr>            return (
+                                                                        return (
                                                                             <tr>
                                                                                 <th scope="row">{deduction.name.toLocaleUpperCase()}
                                                                                 </th>
