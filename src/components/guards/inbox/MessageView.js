@@ -17,10 +17,9 @@ class MessageView extends React.Component {
             >
                 {({loading, data}) => {
                     if (data) {
-                        const {id, body, author, replies, timestamp,message_type} = data.getMessage
-                        console.log(message_type)
+                        const {id, body, author, replies, timestamp,message_type,title} = data.getMessage
                         return <div>
-                            {message_type==='report'?<h4>Report</h4>:<h4>Leave Request</h4>}
+                            {message_type==='report'?<h4>Report</h4>:message_type==='leave'?<h4>Leave Request</h4>:<h4>{title}</h4>}
                             <hr/>
                             <div className="row view-leave">
                                 <div className="col-sm-3">

@@ -12,7 +12,7 @@ class InboxView extends React.Component {
     }
     render() {
 
-        const {id, body, author, timestamp,message_type} = this.props.inbox
+        const {id, body, author, timestamp,message_type,title} = this.props.inbox
 
         return (
             <div className="well" onClick={this.selectMessage}>
@@ -29,7 +29,8 @@ class InboxView extends React.Component {
                             <li>
 
                         <ul className="list-inline list-unstyled">
-                                <li className="list-inline-item">{message_type==='leave'?<strong>Leave request</strong>:<strong>Report</strong>} </li>
+                                <li className="list-inline-item">{message_type==='report'?<strong>Report</strong>:message_type==='leave'?<strong>Leave Request</strong>:<strong>{title}</strong>}
+                                </li>
                                 <li className="list-inline-item pull-right">{timeSince(timestamp)}</li>
                             </ul>
                             </li>

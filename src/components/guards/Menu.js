@@ -38,7 +38,7 @@ export default ({router, active}) => {
             <NavLink href="" onClick={onInboxLink} active={active === 'inbox'}>Inbox</NavLink>
         </NavItem>
         <NavItem>
-            <NavLink href="" onClick={onReportsLink} active={active === 'reports'}>Reports</NavLink>
+            <NavLink href="" onClick={onReportsLink} active={active === 'reports'}>Report form</NavLink>
         </NavItem>
         <NavItem>
             <NavLink href="" onClick={onLeaveLink} active={active === 'leave'}>Leave form</NavLink>

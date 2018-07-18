@@ -9,31 +9,49 @@ import CurrentGuard from "../../../shared/CurrentGuard"
 import InboxView from "./InboxView"
 import MessageView from "./MessageView"
 import classnames from "classnames"
+import CustomMessage from "./CustomMessageModal"
 
 class Inbox extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            message: ''
+            message: '',
+            showCustomMessageModal: false
         }
         this.onSelectMessage = this.onSelectMessage.bind(this)
+        this.showCustomMessageModal = this.showCustomMessageModal.bind(this)
+        this.closeCustomMessageModal = this.closeCustomMessageModal.bind(this)
     }
 
     onSelectMessage(message) {
         this.setState({message})
     }
 
+    showCustomMessageModal() {
+        this.setState({showCustomMessageModal: true})
+    }
+
+    closeCustomMessageModal() {
+        this.setState({showCustomMessageModal: false})
+
+    }
+
 
     render() {
-       const {message}=this.state
+        const {message,showCustomMessageModal} = this.state
+
         return (
             <div className="container-fluid">
+
                 <div className="row">
                     <div className="col-sm-2 col-md-2 bd-sidebar">
                         <Menu router={this.context.router} active="inbox"/>
 
                     </div>
                     <div className="col-sm-5 col-md-5 col-xl-5 bd-content">
+                        <button className="btn btn-sm btn-dark" onClick={this.showCustomMessageModal}>Send custom message</button>
+                        <br/>
+                        <br/>
                         <Query
                             loadOnMount
                             loadOnReset
@@ -46,7 +64,8 @@ class Inbox extends Component {
                                     if (data.getInbox && data.getInbox.length > 0) {
                                         return (<ul className="list-unstyled ">
                                             {data.getInbox.map(inbox => {
-                                                return <li className={classnames("inbox-list", {"inbox-list-selected": inbox.id===this.state.message})}>
+                                                return <li
+                                                    className={classnames("inbox-list", {"inbox-list-selected": inbox.id === this.state.message})}>
                                                     <InboxView inbox={inbox} onSelectMessage={this.onSelectMessage}/>
                                                     {/*<hr className="inbox-list"/>*/}
                                                 </li>
@@ -68,6 +87,7 @@ class Inbox extends Component {
                         <MessageView message={message}/>
                     </div>
                 </div>
+                <Consumer>{graphql=><CustomMessage graphql={graphql} show={showCustomMessageModal} onClose={this.closeCustomMessageModal}/>}</Consumer>
             </div>
         )
 

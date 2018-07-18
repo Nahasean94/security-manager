@@ -137,6 +137,7 @@ query($guard_id:String!){
                 }
         timestamp
         message_type
+        title
     }
 }`
 const getMessage = `
@@ -158,6 +159,7 @@ query($id:ID!){
                 }
         timestamp
         message_type
+        title
     }
 }`
 const newMessageReply = `
@@ -170,6 +172,29 @@ mutation($message:ID!,$author:String!,$account:String!,$body:String!){
     }
     body
     timestamp
+      }
+}`
+
+const newCustomMessage = `
+mutation($author:String!,$body:String!,$account_type:String!,$message_type:String!,$title:String!){
+    newCustomMessage(author:$author,body:$body,account_type:$account_type,message_type:$message_type,title:$title){
+       id
+        body
+        author{
+            username
+            profile_picture
+                }
+                replies{
+                body
+                timestamp
+                author{
+                username
+                profile_picture
+                }
+                }
+        timestamp
+        message_type
+        title
       }
 }`
 
@@ -188,6 +213,7 @@ export {
     newReport,
     getInbox,
     getMessage,
-    newMessageReply
+    newMessageReply,
+    newCustomMessage
 
 }
