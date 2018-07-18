@@ -9,6 +9,9 @@ body {
 .feed-meta {
     font-size: 0.75em;
 }
+.profile-info{
+    alignment: center;
+}
 
 .bd-sidebar {
     border-right: 1px solid rgba(0, 0, 0, .1);

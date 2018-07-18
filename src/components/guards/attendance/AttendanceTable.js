@@ -1,11 +1,12 @@
 import React from 'react'
 import CurrentGuard from "../../../shared/CurrentGuard"
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import classnames from "classnames"
 import {Query} from "graphql-react"
 import {getGuardAttendance} from "../../../shared/queries"
 import AttendanceView from "./AttendanceView"
 import Menu from "../Menu"
+import PropTypes from "prop-types"
+
 
 class AttendanceTable extends React.Component{
     render(){
@@ -15,7 +16,7 @@ class AttendanceTable extends React.Component{
                     <div className="col-sm-2 col-md-2 bd-sidebar">
                         <Menu router={this.context.router} active="attendance"/>
                     </div>
-                    <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
+                    <div className="col-sm-10 col-md-10 col-xl-10 bd-content">
             <Query
                 loadOnMount
                 loadOnReset
@@ -60,5 +61,7 @@ class AttendanceTable extends React.Component{
         )
     }
 }
-
+AttendanceTable.contextTypes = {
+    router: PropTypes.object.isRequired
+}
 export default AttendanceTable

@@ -1,16 +1,15 @@
 import React, {Component} from 'react'
-import TextFieldGroup from "../../../shared/TextFieldsGroup"
-import {signin} from "../../../shared/queries"
+import {getGuardContactInfo, getGuardInfo, getGuardPaymentInfo} from "../../../shared/queries"
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {dbPromise} from '../indexDB'
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
-import bcrypt from 'bcryptjs-then'
 import validator from '../../../../node_modules/validator/index.js'
 import classnames from "classnames"
 import Menu from '../Menu'
 import PropTypes from "prop-types"
-import ApplyForLeave from "../leave/ApplyForLeave"
+import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap'
+import CurrentGuard from "../../../shared/CurrentGuard"
+
 class Profile extends Component {
     constructor(props) {
         super(props)
@@ -22,9 +21,19 @@ class Profile extends Component {
             errors: {},
             isLoading: false,
             invalid: false,
+            activeTab: 'basic'
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
+        this.toggle = this.toggle.bind(this)
+    }
+
+    toggle(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            })
+        }
     }
 
     onChange(e) {
@@ -54,71 +63,14 @@ class Profile extends Component {
         return isValid
     }
 
-
     onSubmit(e) {
         e.preventDefault()
         if (this.isValid()) {
             const {date, duration} = this.state
-            dbPromise.then(db => {
-                let tx = db.transaction('guards', 'readonly')
-                let store = tx.objectStore('guards')
-                return store.get(Number(date))
-            }).then(guard => {
-                if (guard) {
-                    bcrypt.compare(duration, guard.duration).then(valid => {
-                        if (valid) {
-                            this.setState({
-                                date: '',
-                                duration: '',
-                                errors: {},
-                                guards: [...this.state.guards, guard.first_name]
-                            })
-                            const signedIn = {
-                                date: date,
-                                signin: new Date().toLocaleString(),
-                                signout: '',
-                                date: new Date().toLocaleDateString()
-                            }
-                            dbPromise.then(db => {
-                                let tx = db.transaction('attendance', 'readwrite')
-                                let store = tx.objectStore('attendance')
-                                return store.add(signedIn)
-                            }).then(added => {
-                                this.props.graphql
-                                    .query({
-                                        fetchOptionsOverride: fetchOptionsOverride,
-                                        resetOnLoad: true,
-                                        operation: {
-                                            variables: {
-                                                date: signedIn.date,
-                                                signin: signedIn.signin,
-                                                date: signedIn.date
-                                            },
-                                            query: signin
-                                        }
-                                    })
-                                    .request.then(({data}) => {
-                                        if (data) {
-                                            console.log(data)
-                                        }
-                                    }
-                                )
-                            })
-                        } else {
-                            let errors = {}
-                            errors.duration = 'Incorrect duration'
-                            this.setState({errors})
-                        }
-                    })
-                } else {
-                    let errors = {}
-                    errors.date = 'Guard ID Not Found'
-                    this.setState({errors})
-                }
-            })
+
+
         }
     }
-
 
     render() {
         const {guards, errors, isLoading, showGuardModal} = this.state
@@ -127,13 +79,249 @@ class Profile extends Component {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-2 col-md-2 bd-sidebar">
-                        <Menu  router={this.context.router} active="profile"/>
+                        <Menu router={this.context.router} active="profile"/>
                     </div>
-                    <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
+                    <div className="col-sm-6 col-md-6 col-xl-6 offset-sm-2 bd-content">
                         <div className="row">
-                            <h2 className="offset-sm-4">Inbox information</h2>
+                            <h2 className="offset-sm-4">Profile information</h2>
                         </div>
+                        <div>
+                            <Nav tabs>
+                                <NavItem>
+                                    <NavLink
+                                        className={classnames({active: this.state.activeTab === 'basic'})}
+                                        onClick={() => {
+                                            this.toggle('basic')
+                                        }}
+                                    >
+                                        Basic Info
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink
+                                        className={classnames({active: this.state.activeTab === 'contact'})}
+                                        onClick={() => {
+                                            this.toggle('contact')
+                                        }}
+                                    >
+                                        Contact Info
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink
+                                        className={classnames({active: this.state.activeTab === 'payment'})}
+                                        onClick={() => {
+                                            this.toggle('payment')
+                                        }}
+                                    >
+                                        Payment Info
+                                    </NavLink>
+                                </NavItem>
+                            </Nav>
+                            <TabContent activeTab={this.state.activeTab}>
+                                <TabPane tabId="basic">
+                                    <Query
+                                        loadOnMount
+                                        loadOnReset
+                                        fetchOptionsOverride={fetchOptionsOverride}
+                                        variables={{guard_id: CurrentGuard.getGuardId()}}
+                                        query={getGuardInfo}
+                                    >
+                                        {({loading, data}) => {
+                                            if (data) {
+                                                if (data.getGuardInfo) {
+                                                    return (<div>
+                                                            <ul className="list-inline view-leave">
 
+                                                                <li className="list-inline-item">
+                                                                    <img
+                                                                        src={`http://localhost:8080/uploads/${data.getGuardInfo.profile_picture}`}
+                                                                        width="150" height="150"
+                                                                        className="rounded-circle"/>
+                                                                </li>
+                                                                <li className="list-inline-item">
+                                                                    <button className="btn-dark btn-sm">Update basic
+                                                                        info
+                                                                    </button>
+                                                                </li>
+                                                            </ul>
+                                                            <table className="table table-borderless">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <th scope="row">Surname:</th>
+                                                                    <td>{data.getGuardInfo.surname}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">First
+                                                                        name:
+                                                                    </th>
+                                                                    <td>{data.getGuardInfo.first_name}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Last
+                                                                        name:
+                                                                    </th>
+                                                                    <td>{data.getGuardInfo.last_name}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Date of
+                                                                        birth:
+                                                                    </th>
+                                                                    <td>{new Date(data.getGuardInfo.dob).toLocaleDateString()}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Gender:</th>
+                                                                    <td>{data.getGuardInfo.gender}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">National
+                                                                        ID:
+                                                                    </th>
+                                                                    <td>{data.getGuardInfo.nationalID}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Date of
+                                                                        employment:
+                                                                    </th>
+                                                                    <td>{new Date(data.getGuardInfo.employment_date).toLocaleDateString()}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Guard
+                                                                        ID:
+                                                                    </th>
+                                                                    <td>{data.getGuardInfo.guard_id}</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+                                                    )
+                                                } else {
+                                                    return <p>No basic information was found</p>
+                                                }
+                                            }
+                                            else if (loading) {
+                                                return <p>Loading…</p>
+                                            }
+                                            return <p>Loading failed.</p>
+                                        }
+                                        }
+                                    </Query>
+                                </TabPane>
+                                <TabPane tabId="contact"> <Query
+                                    loadOnMount
+                                    loadOnReset
+                                    fetchOptionsOverride={fetchOptionsOverride}
+                                    variables={{guard_id: CurrentGuard.getGuardId()}}
+                                    query={getGuardContactInfo}
+                                >
+                                    {({loading, data}) => {
+                                        if (data) {
+                                            if (data.getGuardContactInfo) {
+                                                return (
+                                                    <div>
+                                                        <button className="btn-dark btn-sm">Update contact
+                                                            info
+                                                        </button>
+
+                                                        <table className="table table-borderless">
+                                                            <tbody>
+                                                            <tr>
+                                                                <th scope="row">Email:</th>
+                                                                <td>{data.getGuardContactInfo.email}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">Postal Address
+                                                                </th>
+                                                                <td>{data.getGuardContactInfo.postal_address}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">Phone number
+                                                                </th>
+                                                                <td>{data.getGuardContactInfo.cellphone}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row">Deployed Location
+                                                                </th>
+                                                                <td>{data.getGuardContactInfo.location.name}
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+                                                )
+                                            } else {
+                                                return <p>No contact information was found</p>
+                                            }
+                                        }
+                                        else if (loading) {
+                                            return <p>Loading…</p>
+                                        }
+                                        return <p>Loading failed.</p>
+                                    }
+                                    }
+                                </Query>
+                                </TabPane>
+                                <TabPane tabId="payment">
+                                    <Query
+                                        loadOnMount
+                                        loadOnReset
+                                        fetchOptionsOverride={fetchOptionsOverride}
+                                        variables={{guard_id: CurrentGuard.getGuardId()}}
+                                        query={getGuardPaymentInfo}
+                                    >
+                                        {({loading, data}) => {
+                                            if (data) {
+                                                if (data.getGuardPaymentInfo) {
+                                                    return (
+                                                        <div>
+                                                                                                                       <table className="table table-borderless">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <th scope="row">Gross salary:</th>
+                                                                    <td>{data.getGuardPaymentInfo.gross_salary}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Payment contract
+                                                                    </th>
+                                                                    <td>{data.getGuardPaymentInfo.contract}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Deductions
+                                                                    </th>
+                                                                    {data.getGuardPaymentInfo.deductions.length && data.getGuardPaymentInfo.deductions.map(deduction => {
+                                                                        <tr>            return (
+                                                                            <tr>
+                                                                                <th scope="row">{deduction.name.toLocaleUpperCase()}
+                                                                                </th>
+                                                                                <td>{deduction.amount}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    })}
+                                                                </tr>
+
+                                                                </tbody>
+                                                            </table>
+
+                                                        </div>
+                                                    )
+                                                } else {
+                                                    return <p>No payment information was found</p>
+                                                }
+                                            }
+                                            else if (loading) {
+                                                return <p>Loading…</p>
+                                            }
+                                            return <p>Loading failed.</p>
+                                        }
+                                        }
+                                    </Query>
+                                </TabPane>
+                            </TabContent>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,8 +329,9 @@ class Profile extends Component {
 
     }
 }
-Profile.contextTypes={
-    router:PropTypes.object.isRequired
+
+Profile.contextTypes = {
+    router: PropTypes.object.isRequired
 }
 
 export default Profile

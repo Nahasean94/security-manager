@@ -206,7 +206,55 @@ query($guard_id:String!){
        date
       }
 }`
-
+const getGuardInfo=`
+query($guard_id:String!){
+getGuardInfo(guard_id:$guard_id){
+id
+surname
+profile_picture
+timestamp
+guard_id
+first_name
+last_name
+dob
+gender
+nationalID
+employment_date
+}
+}
+`
+const getGuardContactInfo=`
+query($guard_id:String!){
+getGuardContactInfo(guard_id:$guard_id){
+id
+email
+postal_address
+cellphone
+location{
+name
+}
+}
+}
+`
+const getGuardPaymentInfo=`
+query($guard_id:String!){
+getGuardPaymentInfo(guard_id:$guard_id){
+id
+guard_id
+contract
+deductions{
+name
+amount
+}
+transactions{
+timestamp
+amount
+text
+}
+gross_salary
+}
+}
+`
 export {
     addLocation,
     locations,
@@ -224,6 +272,9 @@ export {
     getMessage,
     newMessageReply,
     newCustomMessage,
-    getGuardAttendance
+    getGuardAttendance,
+    getGuardInfo,
+    getGuardPaymentInfo,
+    getGuardContactInfo
 
 }
