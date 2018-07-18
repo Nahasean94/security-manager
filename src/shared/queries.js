@@ -197,6 +197,15 @@ mutation($author:String!,$body:String!,$account_type:String!,$message_type:Strin
         title
       }
 }`
+const getGuardAttendance = `
+query($guard_id:String!){
+    getGuardAttendance(guard_id:$guard_id){
+       id
+       signin
+       signout
+       date
+      }
+}`
 
 export {
     addLocation,
@@ -214,6 +223,7 @@ export {
     getInbox,
     getMessage,
     newMessageReply,
-    newCustomMessage
+    newCustomMessage,
+    getGuardAttendance
 
 }

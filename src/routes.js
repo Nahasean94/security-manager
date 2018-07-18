@@ -8,6 +8,7 @@ import InboxPage from "./components/guards/inbox/InboxPage"
 import ProfilePage from "./components/guards/profile/ProfilePage"
 import Reports from "./components/guards/reports/Reports"
 import Leave from "./components/guards/leave/Leave"
+import AttendanceTable from "./components/guards/attendance/AttendanceTable"
 
 
 export default () => {
@@ -22,6 +23,7 @@ export default () => {
                         <Route exact path="/guards/inbox" component={InboxPage}/>
                         <Route exact path="/guards/profile" component={ProfilePage}/>
                         <Route exact path="/guards/reports" component={Reports}/>
+                        <Route exact path="/guards/attendance" component={AttendanceTable}/>
                     </Switch>
                 </App>
             </div>
