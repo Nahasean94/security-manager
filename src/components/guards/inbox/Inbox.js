@@ -64,7 +64,7 @@ class Inbox extends Component {
                             }
                         </Query>
                     </div>
-                    <div className="col-sm-4 col-md-4 col-xl-4 bd-location">
+                    <div className="col-sm-5 col-md-5 col-xl-5 bd-location">
                         <LeaveView leaveRequest={leaveRequest}/>
                     </div>
                 </div>

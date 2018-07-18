@@ -23,12 +23,22 @@ class InboxView extends React.Component {
                             width="50" height="50"
                             className="rounded-circle"/>
                     </div>
-                    <div className="col-sm-10">
-                            <ul className="list-inline list-unstyled">
+                    <div className="col-sm-10 view-leave">
+                        <ul className="list-unstyled">
+                        </ul>
+                            <li>
+
+                        <ul className="list-inline list-unstyled">
                                 <li className="list-inline-item"> <strong>Leave request</strong></li>
                                 <li className="list-inline-item pull-right">{timeSince(timestamp)}</li>
                             </ul>
-                                <p>{body.substr(0, 200)}...</p>
+                            </li>
+                        <li>
+                     {body.substr(0, 50)}...
+                        </li>
+                        <li className="feed-meta">{author.username}
+                        </li>
+
                     </div>
                 </div>
             </div>

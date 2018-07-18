@@ -43,14 +43,14 @@ const uploadProfilePicture = `
   }
 }
 `
-const locations=`
+const locations = `
 {
 locations{
 id
 name
 }
 }`
-const person=`
+const person = `
 query($id:ID!){
 person(id:$id){
 username
@@ -62,7 +62,7 @@ address
 }
 }`
 
-const findGuardsInLocation=`
+const findGuardsInLocation = `
 query($id:ID!){
 findGuardsInLocation(id:$id){
 id
@@ -72,7 +72,7 @@ email
 password
 }
 }`
-const signin=`
+const signin = `
 mutation($guard_id:Int!,$signin:String!,$date:String!){
 signin(guard_id:$guard_id,signin:$signin,date:$date){
 id
@@ -81,7 +81,7 @@ signin
 date
 }
 }`
-const signout=`
+const signout = `
 mutation($guard_id:Int!,$signout:String!,$date:String!){
 signout(guard_id:$guard_id,signout:$signout,date:$date){
 id
@@ -91,7 +91,7 @@ signout
 date
 }
 }`
-const newLeaveRequest=`
+const newLeaveRequest = `
 mutation($author:String!,$body:String!,$account_type:String!){
   newLeaveRequest(author:$author,body:$body,account_type:$account_type){
     id
@@ -113,7 +113,7 @@ mutation($author:String!,$body:String!,$account_type:String!){
     
   }
 }`
-const newReport=`
+const newReport = `
 mutation($guard_id:Int!,$report:String!){
   newReport(guard_id:$guard_id,report:$report){
     id
@@ -126,7 +126,7 @@ mutation($guard_id:Int!,$report:String!){
     timestamp
   }
 }`
-const getInbox=`
+const getInbox = `
 query($guard_id:String!){
     getInbox(guard_id:$guard_id){
         id
@@ -138,7 +138,7 @@ query($guard_id:String!){
         timestamp
     }
 }`
-const getLeaveRequest=`
+const getLeaveRequest = `
 query($id:ID!){
     getLeaveRequest(id:$id){
         id
@@ -158,7 +158,18 @@ query($id:ID!){
         timestamp
     }
 }`
-
+const newLeaveReply = `
+mutation($leaveRequest:ID!,$author:String!,$account:String!,$body:String!){
+    newLeaveReply(leaveRequest:$leaveRequest,author:$author,account:$account,body:$body){
+      id
+    author{
+      username
+      profile_picture
+    }
+    body
+    timestamp
+      }
+}`
 
 export {
     addLocation,
@@ -174,6 +185,7 @@ export {
     newLeaveRequest,
     newReport,
     getInbox,
-    getLeaveRequest
+    getLeaveRequest,
+    newLeaveReply
 
 }

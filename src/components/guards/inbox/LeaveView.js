@@ -1,7 +1,8 @@
 import React from 'react'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import {getLeaveRequest} from "../../../shared/queries"
-import {Query} from "graphql-react"
+import {Consumer, Query} from "graphql-react"
+import Comments from "./comments/Comments"
 
 class LeaveView extends React.Component {
     render() {
@@ -40,6 +41,8 @@ class LeaveView extends React.Component {
                             <p>{body}...</p>
                             <hr/>
                             <h5>Replies</h5>
+                            <Consumer>{graphql =>
+                                <Comments graphql={graphql} replies={replies} id={leaveRequest}/>}</Consumer>
                         </div>
                     }
                     else if (loading) {
