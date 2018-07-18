@@ -4,18 +4,18 @@ import {timeSince} from "../../../shared/TimeSince"
 class InboxView extends React.Component {
     constructor(props){
         super(props)
-        this.selectLeaveRequest=this.selectLeaveRequest.bind(this)
+        this.selectMessage=this.selectMessage.bind(this)
     }
-    selectLeaveRequest(e){
+    selectMessage(e){
         e.preventDefault()
-        this.props.onSelectLeaveRequest(this.props.inbox.id)
+        this.props.onSelectMessage(this.props.inbox.id)
     }
     render() {
 
-        const {id, body, author, timestamp} = this.props.inbox
+        const {id, body, author, timestamp,message_type} = this.props.inbox
 
         return (
-            <div className="well" onClick={this.selectLeaveRequest}>
+            <div className="well" onClick={this.selectMessage}>
                 <div className="row view-leave">
                     <div className="col-sm-2">
                         <img
@@ -25,11 +25,11 @@ class InboxView extends React.Component {
                     </div>
                     <div className="col-sm-10 view-leave">
                         <ul className="list-unstyled">
-                        </ul>
+
                             <li>
 
                         <ul className="list-inline list-unstyled">
-                                <li className="list-inline-item"> <strong>Leave request</strong></li>
+                                <li className="list-inline-item">{message_type==='leave'?<strong>Leave request</strong>:<strong>Report</strong>} </li>
                                 <li className="list-inline-item pull-right">{timeSince(timestamp)}</li>
                             </ul>
                             </li>
@@ -38,7 +38,7 @@ class InboxView extends React.Component {
                         </li>
                         <li className="feed-meta">{author.username}
                         </li>
-
+                    </ul>
                     </div>
                 </div>
             </div>

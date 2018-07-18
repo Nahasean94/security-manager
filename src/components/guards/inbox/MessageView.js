@@ -1,25 +1,26 @@
 import React from 'react'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {getLeaveRequest} from "../../../shared/queries"
+import { getMessage} from "../../../shared/queries"
 import {Consumer, Query} from "graphql-react"
 import Comments from "./comments/Comments"
 
-class LeaveView extends React.Component {
+class MessageView extends React.Component {
     render() {
-        const {leaveRequest} = this.props
-        if (leaveRequest) {
+        const {message} = this.props
+        if (message) {
             return <Query
                 loadOnMount
                 loadOnReset
                 fetchOptionsOverride={fetchOptionsOverride}
-                variables={{id: leaveRequest}}
-                query={getLeaveRequest}
+                variables={{id: message}}
+                query={getMessage}
             >
                 {({loading, data}) => {
                     if (data) {
-                        const {id, body, author, replies, timestamp} = data.getLeaveRequest
+                        const {id, body, author, replies, timestamp,message_type} = data.getMessage
+                        console.log(message_type)
                         return <div>
-                            <h4>Leave Request</h4>
+                            {message_type==='report'?<h4>Report</h4>:<h4>Leave Request</h4>}
                             <hr/>
                             <div className="row view-leave">
                                 <div className="col-sm-3">
@@ -42,7 +43,7 @@ class LeaveView extends React.Component {
                             <hr/>
                             <h5>Replies</h5>
                             <Consumer>{graphql =>
-                                <Comments graphql={graphql} replies={replies} id={leaveRequest}/>}</Consumer>
+                                <Comments graphql={graphql} replies={replies} id={message}/>}</Consumer>
                         </div>
                     }
                     else if (loading) {
@@ -57,4 +58,4 @@ class LeaveView extends React.Component {
     }
 }
 
-export default LeaveView
+export default MessageView

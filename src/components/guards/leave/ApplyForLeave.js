@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import TextFieldGroup from "../../../shared/TextFieldsGroup"
-import {newLeaveRequest} from "../../../shared/queries"
+import {newMessage} from "../../../shared/queries"
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
@@ -70,9 +70,10 @@ class ApplyForLeave extends Component {
                     variables: {
                         author:CurrentGuard.getGuardId(),
                         body:this.state.message,
-                        account_type:'guard'
+                        account_type:'guard',
+                        message_type:'leave'
                     },
-                    query: newLeaveRequest
+                    query: newMessage
                 }
             }).request.then(({data}) => {
                 if (data) {

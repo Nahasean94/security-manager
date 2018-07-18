@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {timeSince} from "../../../../shared/TimeSince"
-import jwt from "jsonwebtoken"
 
 class CommentView extends React.Component {
     constructor(props) {

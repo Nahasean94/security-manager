@@ -4,7 +4,7 @@ import {Query} from 'graphql-react'
 import validator from 'validator'
 import {isEmpty} from 'lodash'
 import classnames from "classnames"
-import {newLeaveReply} from "../../../../shared/queries"
+import {newMessageReply} from "../../../../shared/queries"
 import CurrentGuard from "../../../../shared/CurrentGuard"
 import {fetchOptionsOverride} from "../../../../shared/fetchOverrideOptions"
 
@@ -61,12 +61,12 @@ class Comments extends React.Component {
                     resetOnLoad: true,
                     operation: {
                         variables: {
-                            leaveRequest: this.props.id,
+                            message: this.props.id,
                             author:String(CurrentGuard.getGuardId()),
                             account:'guard' ,
                             body: this.state.comment,
                         },
-                        query: newLeaveReply
+                        query: newMessageReply
                     }
                 })
                 .request.then(({data}) => {
@@ -77,7 +77,7 @@ class Comments extends React.Component {
                             isLoading: false,
                             invalid: false,
                             message: data
-                                ? <li key={data.newLeaveReply.id}><CommentView comment={data.newLeaveReply}/></li>
+                                ? <li key={data.newMessageReply.id}><CommentView comment={data.newMessageReply}/></li>
                                 : `Sorry, your reply could not be saved.`
                         })
                     }

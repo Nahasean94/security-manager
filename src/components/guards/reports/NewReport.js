@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {newReport} from "../../../shared/queries"
+import {newMessage} from "../../../shared/queries"
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
@@ -15,7 +15,7 @@ class ApplyForLeave extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            report: '',
+            message: '',
             response:'',
             errors: {},
             isLoading: false,
@@ -33,11 +33,11 @@ class ApplyForLeave extends Component {
 
     validateInfo(data) {
         let errors = {}
-        if (validator.isEmpty(data.report)) {
-            errors.report = 'This field is required'
+        if (validator.isEmpty(data.message)) {
+            errors.message = 'This field is required'
         }
-        if (data.report.length<10) {
-            errors.report = 'Report must be more than 10 characters'
+        if (data.message.length<10) {
+            errors.message = 'Report must be more than 10 characters'
         }
         return {
             errors,
@@ -62,16 +62,18 @@ class ApplyForLeave extends Component {
                 resetOnLoad: true,
                 operation: {
                     variables: {
-                        guard_id:Number(CurrentGuard.getGuardId()),
-                        report:this.state.report,
+                        author:CurrentGuard.getGuardId(),
+                        body:this.state.message,
+                        account_type:'guard',
+                        message_type:'report'
                     },
-                    query: newReport
+                    query: newMessage
                 }
             }).request.then(({data}) => {
                 if (data) {
                     this.setState({
-                        report: '',
-                        response:'Message successfully sent',
+                        message: '',
+                        response:'Report successfully sent',
                     })
                 }
             })
@@ -81,7 +83,7 @@ class ApplyForLeave extends Component {
 
     render() {
         const { errors, response} = this.state
-        const messageError = errors.report
+        const messageError = errors.message
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -92,12 +94,12 @@ class ApplyForLeave extends Component {
                     <div className="col-sm-7 col-md-7 col-xl-7 bd-content">
                         {response && <div className="alert alert-dark">{response}</div>}
                         <div className="row">
-                            <h2 className="offset-sm-4">New report</h2>
+                            <h2 className="offset-sm-4">New message</h2>
                         </div>
                         <form onSubmit={this.onSubmit}>
                             <div className="form-group">
-                        <textarea name="report" onChange={this.onChange}
-                                  className={classnames("form-control", {"is-invalid": messageError})} rows="3" id="report" onClick={this.onChange} value={this.state.report}/>
+                        <textarea name="message" onChange={this.onChange}
+                                  className={classnames("form-control", {"is-invalid": messageError})} rows="3" id="message" onClick={this.onChange} value={this.state.message}/>
                                     {messageError && <div className="invalid-feedback">{messageError}</div>}
                                 </div>
                             <div className="form-group row">

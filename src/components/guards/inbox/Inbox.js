@@ -7,25 +7,25 @@ import Menu from '../Menu'
 import PropTypes from "prop-types"
 import CurrentGuard from "../../../shared/CurrentGuard"
 import InboxView from "./InboxView"
-import LeaveView from "./LeaveView"
+import MessageView from "./MessageView"
 import classnames from "classnames"
 
 class Inbox extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            leaveRequest: ''
+            message: ''
         }
-        this.onSelectLeaveRequest = this.onSelectLeaveRequest.bind(this)
+        this.onSelectMessage = this.onSelectMessage.bind(this)
     }
 
-    onSelectLeaveRequest(leaveRequest) {
-        this.setState({leaveRequest})
+    onSelectMessage(message) {
+        this.setState({message})
     }
 
 
     render() {
-       const {leaveRequest}=this.state
+       const {message}=this.state
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -46,8 +46,8 @@ class Inbox extends Component {
                                     if (data.getInbox && data.getInbox.length > 0) {
                                         return (<ul className="list-unstyled ">
                                             {data.getInbox.map(inbox => {
-                                                return <li className={classnames("inbox-list", {"inbox-list-selected": inbox.id===this.state.leaveRequest})}>
-                                                    <InboxView inbox={inbox} onSelectLeaveRequest={this.onSelectLeaveRequest}/>
+                                                return <li className={classnames("inbox-list", {"inbox-list-selected": inbox.id===this.state.message})}>
+                                                    <InboxView inbox={inbox} onSelectMessage={this.onSelectMessage}/>
                                                     {/*<hr className="inbox-list"/>*/}
                                                 </li>
                                             })}
@@ -65,7 +65,7 @@ class Inbox extends Component {
                         </Query>
                     </div>
                     <div className="col-sm-5 col-md-5 col-xl-5 bd-location">
-                        <LeaveView leaveRequest={leaveRequest}/>
+                        <MessageView message={message}/>
                     </div>
                 </div>
             </div>

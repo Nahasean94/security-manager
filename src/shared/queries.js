@@ -91,9 +91,9 @@ signout
 date
 }
 }`
-const newLeaveRequest = `
-mutation($author:String!,$body:String!,$account_type:String!){
-  newLeaveRequest(author:$author,body:$body,account_type:$account_type){
+const newMessage = `
+mutation($author:String!,$body:String!,$account_type:String!,$message_type:String!){
+  newMessage(author:$author,body:$body,account_type:$account_type,message_type:$message_type){
     id
     author{
       username
@@ -136,11 +136,12 @@ query($guard_id:String!){
             profile_picture
                 }
         timestamp
+        message_type
     }
 }`
-const getLeaveRequest = `
+const getMessage = `
 query($id:ID!){
-    getLeaveRequest(id:$id){
+    getMessage(id:$id){
         id
         body
         author{
@@ -156,11 +157,12 @@ query($id:ID!){
                 }
                 }
         timestamp
+        message_type
     }
 }`
-const newLeaveReply = `
-mutation($leaveRequest:ID!,$author:String!,$account:String!,$body:String!){
-    newLeaveReply(leaveRequest:$leaveRequest,author:$author,account:$account,body:$body){
+const newMessageReply = `
+mutation($message:ID!,$author:String!,$account:String!,$body:String!){
+    newMessageReply(message:$message,author:$author,account:$account,body:$body){
       id
     author{
       username
@@ -182,10 +184,10 @@ export {
     person,
     signin,
     signout,
-    newLeaveRequest,
+    newMessage,
     newReport,
     getInbox,
-    getLeaveRequest,
-    newLeaveReply
+    getMessage,
+    newMessageReply
 
 }

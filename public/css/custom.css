@@ -27,7 +27,7 @@ body {
     margin-bottom: -9999px;
     overflow: hidden;
     padding-top: 10px;
-
+    overflow-y: auto;
 }
 
 .container-fluid {
