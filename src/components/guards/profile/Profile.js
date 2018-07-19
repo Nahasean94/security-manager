@@ -306,6 +306,7 @@ showUpdateContactInfoModal() {
                                         {({loading, data}) => {
                                             if (data) {
                                                 if (data.getGuardPaymentInfo) {
+                                                    let total_deductions=0
                                                     return (
                                                         <div>
                                                             <table className="table table-borderless">
@@ -323,6 +324,7 @@ showUpdateContactInfoModal() {
                                                                     <th scope="row">Deductions
                                                                     </th>
                                                                     {data.getGuardPaymentInfo.deductions.length && data.getGuardPaymentInfo.deductions.map(deduction => {
+                                                                        total_deductions=total_deductions+deduction.amount
                                                                         return (
                                                                             <tr>
                                                                                 <th scope="row">{deduction.name.toLocaleUpperCase()}
@@ -331,8 +333,18 @@ showUpdateContactInfoModal() {
                                                                             </tr>
                                                                         )
                                                                     })}
+                                                                    <hr/>
+                                                                    <tr>
+                                                                        <th scope="row">Total deductions
+                                                                        </th>
+                                                                        <td>{total_deductions}</td>
+                                                                    </tr>
                                                                 </tr>
-
+                                                                <tr>
+                                                                    <th scope="row">Net Salary
+                                                                    </th>
+                                                                    <td>{data.getGuardPaymentInfo.gross_salary-total_deductions}</td>
+                                                                </tr>
                                                                 </tbody>
                                                             </table>
 
