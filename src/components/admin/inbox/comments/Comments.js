@@ -62,8 +62,8 @@ class Comments extends React.Component {
                     operation: {
                         variables: {
                             message: this.props.id,
-                            author:String(CurrentGuard.getGuardId()),
-                            account:'guard' ,
+                            author:localStorage.getItem('SecurityManager'),
+                            account:'admin' ,
                             body: this.state.comment,
                         },
                         query: newMessageReply
@@ -110,7 +110,7 @@ class Comments extends React.Component {
                 <hr/>
 
                 {replies.length > 0 ? <ul className="list-unstyled">
-                    {replies.map(comment => {
+                    {replies.reverse().map(comment => {
                         return (
                             <li key={comment.id}><CommentView comment={comment}/></li>)
                     })

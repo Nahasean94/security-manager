@@ -199,7 +199,7 @@ query($id:ID!){
     }
 }`
 const newMessageReply = `
-mutation($guard_id:String!,$surname:String,$first_name:String!,$last_name:String!, $dob:String!,$gender:String!,$nationalID:Int!,$employment_date:String!){
+mutation($message:ID!,$author:String,$account:String!,$body:String!){
     newMessageReply(message:$message,author:$author,account:$account,body:$body){
       id
     author{

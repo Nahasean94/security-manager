@@ -7,17 +7,18 @@ import Menu from '../Menu'
 import PropTypes from "prop-types"
 import GuardView from "./GuardView"
 import GuardDetails from "./GuardDetails"
+import NewGuard from "../../guards/modals/NewGuard"
 
 class AllGuards extends Component {
     constructor(props) {
         super(props)
         this.state = {
             guard_id: '',
-            showCustomGuardModal: false
+            showNewGuardModal: false
         }
         this.onSelectGuard = this.onSelectGuard.bind(this)
-        this.showCustomGuardModal = this.showCustomGuardModal.bind(this)
-        this.closeCustomGuardModal = this.closeCustomGuardModal.bind(this)
+        this.showNewGuardModal = this.showNewGuardModal.bind(this)
+        this.closeNewGuardModal = this.closeNewGuardModal.bind(this)
     }
 
     onSelectGuard(guard_id) {
@@ -25,12 +26,12 @@ class AllGuards extends Component {
         this.setState({guard_id})
     }
 
-    showCustomGuardModal() {
-        this.setState({showCustomGuardModal: true})
+    showNewGuardModal() {
+        this.setState({showNewGuardModal: true})
     }
 
-    closeCustomGuardModal() {
-        this.setState({showCustomGuardModal: false})
+    closeNewGuardModal() {
+        this.setState({showNewGuardModal: false})
     }
 
 
@@ -43,9 +44,10 @@ class AllGuards extends Component {
                         <Menu router={this.context.router} active="guards"/>
                     </div>
                     <div className="col-sm-5 col-md-5 col-xl-5 bd-content">
-                        <button className="btn btn-sm btn-dark" onClick={this.showCustomGuardModal}>New guard</button>
+                        <button className="btn btn-sm btn-dark" onClick={this.showNewGuardModal}>New guard</button>
                         <br/>
                         <br/>
+                        <NewGuard show={this.state.showNewGuardModal} onClose={this.closeNewGuardModal}/>
                         <Query
                             loadOnMount
                             loadOnReset

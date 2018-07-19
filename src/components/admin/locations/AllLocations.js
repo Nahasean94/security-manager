@@ -7,6 +7,7 @@ import Menu from '../Menu'
 import PropTypes from "prop-types"
 import LocationView from "./LocationView"
 import LocationDetails from "./LocationDetails"
+import NewLocationForm from "./NewLocationForm"
 
 class AllLocations extends Component {
     constructor(props) {
@@ -14,23 +15,23 @@ class AllLocations extends Component {
         this.state = {
             id: '',
             name: '',
-            showCustomLocationModal: false
+            showNewLocationModal: false
         }
         this.onSelectLocation = this.onSelectLocation.bind(this)
-        this.showCustomLocationModal = this.showCustomLocationModal.bind(this)
-        this.closeCustomLocationModal = this.closeCustomLocationModal.bind(this)
+        this.showNewLocationModal = this.showNewLocationModal.bind(this)
+        this.closeNewLocationModal = this.closeNewLocationModal.bind(this)
     }
 
     onSelectLocation(id,name) {
         this.setState({id,name})
     }
 
-    showCustomLocationModal() {
-        this.setState({showCustomLocationModal: true})
+    showNewLocationModal() {
+        this.setState({showNewLocationModal: true})
     }
 
-    closeCustomLocationModal() {
-        this.setState({showCustomLocationModal: false})
+    closeNewLocationModal() {
+        this.setState({showNewLocationModal: false})
     }
 
 
@@ -43,9 +44,10 @@ class AllLocations extends Component {
                         <Menu router={this.context.router} active="locations"/>
                     </div>
                     <div className="col-sm-5 col-md-5 col-xl-5 bd-content">
-                        <button className="btn btn-sm btn-dark" onClick={this.showCustomLocationModal}>New location</button>
+                        <button className="btn btn-sm btn-dark" onClick={this.showNewLocationModal}>New location</button>
                         <br/>
                         <br/>
+                        <NewLocationForm show={this.state.showNewLocationModal} onClose={this.closeNewLocationModal}/>
                         <Query
                             loadOnMount
                             loadOnReset

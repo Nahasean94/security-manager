@@ -26,6 +26,9 @@ export default ({router, active}) => {
         <NavItem>
             <NavLink href="" onClick={onLocationsLink} active={active === 'locations'}>Locations</NavLink>
         </NavItem>
+        <NavItem>
+            <NavLink href="" onClick={onLocationsLink} active={active === 'attendanche'}>Attendance</NavLink>
+        </NavItem>
 
     </Nav>
 
