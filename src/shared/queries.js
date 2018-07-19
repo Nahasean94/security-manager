@@ -1,3 +1,5 @@
+import requireAuth from "../components/utils/requireAuth"
+
 const login = `
    mutation($email:String!,$password:String!) {
   login(email:$email,password:$password) {
@@ -240,6 +242,17 @@ query($guard_id:String!){
        signin
        signout
        date
+       guard_id
+      }
+}`
+const getAllGuardsAttendance = `
+{
+    getAllGuardsAttendance{
+       id
+       signin
+       signout
+       date
+       guard_id
       }
 }`
 const getGuardInfo = `
@@ -357,6 +370,7 @@ export {
     newMessageReply,
     newCustomMessage,
     getGuardAttendance,
+    getAllGuardsAttendance,
     getGuardInfo,
     getGuardPaymentInfo,
     getGuardContactInfo,

@@ -2,6 +2,7 @@ const electron =require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const ipc = require('electron').ipcMain
+const isDev=require('electron-is-dev')
 
 
 let mainWindow

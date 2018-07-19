@@ -9,6 +9,7 @@ import ProfilePage from "./components/guards/profile/ProfilePage"
 import Reports from "./components/guards/reports/Reports"
 import Leave from "./components/guards/leave/Leave"
 import AttendanceTable from "./components/guards/attendance/AttendanceTable"
+import AllGuardsAttendanceTable from "./components/admin/attendance/AttendanceTable"
 import AllGuards from "./components/admin/guards/AllGuards"
 import AllLocations from "./components/admin/locations/AllLocations"
 
@@ -20,8 +21,9 @@ export default () => {
                 <App>
                     <Switch>
                         <Route exact path="/" component={requireAuth(AdminInboxPage)}/>
-                        <Route exact path="/admin/guards" component={AllGuards}/>
-                        <Route exact path="/admin/locations" component={AllLocations}/>
+                        <Route exact path="/admin/locations" component={requireAuth(AllLocations)}/>
+                        <Route exact path="/admin/guards" component={requireAuth(AllGuards)}/>
+                        <Route exact path="/admin/attendance" component={requireAuth(AllGuardsAttendanceTable)}/>
                         <Route exact path="/guards" component={Home}/>
                         <Route exact path="/guards/leave" component={Leave}/>
                         <Route exact path="/guards/inbox" component={InboxPage}/>
