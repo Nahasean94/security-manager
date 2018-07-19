@@ -37,9 +37,10 @@ const isLocationExists = `
 }
 `
 const uploadProfilePicture = `
-   mutation($file:Upload!) {
-  uploadProfilePicture(file:$file) {
-   uploaded
+   mutation($guard:ID,$file:Upload!) {
+  uploadProfilePicture(guard:$guard,file:$file) {
+   id
+   profile_picture
   }
 }
 `
@@ -163,7 +164,7 @@ query($id:ID!){
     }
 }`
 const newMessageReply = `
-mutation($message:ID!,$author:String!,$account:String!,$body:String!){
+mutation($guard_id:String!,$surname:String,$first_name:String!,$last_name:String!, $dob:String!,$gender:String!,$nationalID:Int!,$employment_date:String!){
     newMessageReply(message:$message,author:$author,account:$account,body:$body){
       id
     author{
@@ -206,7 +207,7 @@ query($guard_id:String!){
        date
       }
 }`
-const getGuardInfo=`
+const getGuardInfo = `
 query($guard_id:String!){
 getGuardInfo(guard_id:$guard_id){
 id
@@ -223,7 +224,9 @@ employment_date
 }
 }
 `
-const getGuardContactInfo=`
+
+
+const getGuardContactInfo = `
 query($guard_id:String!){
 getGuardContactInfo(guard_id:$guard_id){
 id
@@ -236,7 +239,7 @@ name
 }
 }
 `
-const getGuardPaymentInfo=`
+const getGuardPaymentInfo = `
 query($guard_id:String!){
 getGuardPaymentInfo(guard_id:$guard_id){
 id
@@ -255,6 +258,35 @@ gross_salary
 }
 }
 `
+const confirmPassword = `
+    query($guard:ID!,$password:String!){
+  confirmPassword(guard:$guard,password:$password) {
+   confirmed
+  }
+}
+`
+const changePassword = `
+    query($guard:ID!,$password:String!){
+  changePassword(guard:$guard,password:$password) {
+   confirmed
+  }
+}
+`
+const updateGuardBasicInfo = `
+   mutation($id:ID!,$guard_id:String!,$surname:String,$first_name:String!,$last_name:String!, $dob:String!,$gender:String!,$nationalID:Int!,$employment_date:String!) {
+  updateGuardBasicInfo(id:$id,guard_id:$guard_id,surname:$surname,first_name:$first_name,last_name:$last_name, dob:$dob,gender:$gender,nationalID:$nationalID,employment_date:$employment_date) {
+  id
+ guard_id
+ surname
+ first_name
+ last_name
+  dob
+  gender
+  nationalID
+  employment_date
+   }
+}
+`
 export {
     addLocation,
     locations,
@@ -267,7 +299,10 @@ export {
     signin,
     signout,
     newMessage,
-    newReport,
+    uploadProfilePicture,
+    confirmPassword,
+    updateGuardBasicInfo,
+    changePassword,
     getInbox,
     getMessage,
     newMessageReply,

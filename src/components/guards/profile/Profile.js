@@ -9,6 +9,7 @@ import Menu from '../Menu'
 import PropTypes from "prop-types"
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap'
 import CurrentGuard from "../../../shared/CurrentGuard"
+import UpdateBasicInfo from "../modals/UpdateBasicInfo"
 
 class Profile extends Component {
     constructor(props) {
@@ -21,11 +22,24 @@ class Profile extends Component {
             errors: {},
             isLoading: false,
             invalid: false,
-            activeTab: 'basic'
+            activeTab: 'basic',
+            showUpdateBasicInfoModal: false,
+            showUpdateContactInfoModal: false,
+            showUpdatePaymentInfoModal: false
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
         this.toggle = this.toggle.bind(this)
+        this.showUpdateBasicInfoModal = this.showUpdateBasicInfoModal.bind(this)
+        this.closeUpdateBasicInfoModal = this.closeUpdateBasicInfoModal.bind(this)
+    }
+
+    showUpdateBasicInfoModal() {
+        this.setState({showUpdateBasicInfoModal: true})
+    }
+
+    closeUpdateBasicInfoModal() {
+        this.setState({showUpdateBasicInfoModal: false})
     }
 
     toggle(tab) {
@@ -73,8 +87,6 @@ class Profile extends Component {
     }
 
     render() {
-        const {guards, errors, isLoading, showGuardModal} = this.state
-        const messageError = errors.message
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -140,7 +152,9 @@ class Profile extends Component {
                                                                         className="rounded-circle"/>
                                                                 </li>
                                                                 <li className="list-inline-item">
-                                                                    <button className="btn-dark btn-sm">Update basic
+                                                                    <button className="btn-dark btn-sm"
+                                                                            onClick={this.showUpdateBasicInfoModal}>Update
+                                                                        basic
                                                                         info
                                                                     </button>
                                                                 </li>
@@ -195,7 +209,10 @@ class Profile extends Component {
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
-
+                                                            <Consumer>{graphql => <UpdateBasicInfo graphql={graphql}
+                                                                                                   show={this.state.showUpdateBasicInfoModal}
+                                                                                                   onClose={this.closeUpdateBasicInfoModal}
+                                                                                                   info={data.getGuardInfo}/>}</Consumer>
                                                         </div>
                                                     )
                                                 } else {
@@ -278,7 +295,7 @@ class Profile extends Component {
                                                 if (data.getGuardPaymentInfo) {
                                                     return (
                                                         <div>
-                                                                                                                       <table className="table table-borderless">
+                                                            <table className="table table-borderless">
                                                                 <tbody>
                                                                 <tr>
                                                                     <th scope="row">Gross salary:</th>
@@ -324,6 +341,7 @@ class Profile extends Component {
                         </div>
                     </div>
                 </div>
+
             </div>
         )
 

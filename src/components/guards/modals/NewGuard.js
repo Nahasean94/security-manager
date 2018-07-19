@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import TextFieldGroup from "../../shared/TextFieldsGroup"
+import TextFieldGroup from "../../../shared/TextFieldsGroup"
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import validator from 'validator'
 import {isEmpty} from 'lodash'
-import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
-import {locations, registerGuard} from '../../shared/queries'
+import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
+import {locations, registerGuard} from '../../../shared/queries'
 import {Query} from "graphql-react"
 import Select from 'react-select'
 

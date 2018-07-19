@@ -70,7 +70,9 @@ body {
     padding-top: 5px;
     cursor: pointer;
 }
-
+.modal-full{
+    height: 400px!important;
+}
 .flat, .btn, .form-control, .nav-pills .nav-link {
     border-radius: unset;
 }
