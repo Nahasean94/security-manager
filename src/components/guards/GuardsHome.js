@@ -10,7 +10,7 @@ import {isEmpty} from "lodash"
 import bcrypt from 'bcryptjs-then'
 import GuardModal from "./modals/GuardModal"
 import PropTypes from 'prop-types'
-import  CurrentGuard from '../../shared/CurrentGuard'
+import CurrentGuard from '../../shared/CurrentGuard'
 import {Nav, NavItem, NavLink} from "reactstrap"
 
 let locationOptions
@@ -28,51 +28,28 @@ class GuardsHome extends Component {
             invalid: false,
             showGuardModal: false,
             dropdownOpen: false,
+            selectedGuard: '',
             display: 'authorize',
 
         }
         this.onSubmit = this.onSubmit.bind(this)
+        this.removeGuard = this.removeGuard.bind(this)
         this.onChange = this.onChange.bind(this)
         this.handleLocationChange = this.handleLocationChange.bind(this)
         this.showGuardModal = this.showGuardModal.bind(this)
         this.closeGuardModal = this.closeGuardModal.bind(this)
-        this.changeDisplayToAuthorize = this.changeDisplayToAuthorize.bind(this)
-        this.changeDisplayToInbox = this.changeDisplayToInbox.bind(this)
-        this.changeDisplayToLeave = this.changeDisplayToLeave.bind(this)
-        this.changeDisplayToRetire = this.changeDisplayToRetire.bind(this)
-        this.toggle = this.toggle.bind(this)
         this.goToProfile = this.goToProfile.bind(this)
     }
 
-    changeDisplayToAuthorize(e) {
-        e.preventDefault()
-        this.setState({display: 'authorize'})
+    removeGuard(guard) {
+        this.setState({guards: this.state.guards.filter(g => g !== guard)})
+        console.log(this.state.guards)
     }
 
-    changeDisplayToInbox(e) {
-        e.preventDefault()
-        this.setState({display: 'inbox'})
-    }
-
-    changeDisplayToLeave(e) {
-        e.preventDefault()
-        this.setState({display: 'leave'})
-    }
-
-    changeDisplayToRetire(e) {
-        e.preventDefault()
-        this.setState({display: 'retire'})
-    }
-
-    toggle() {
-        this.setState({
-            dropdownOpen: !this.state.dropdownOpen
-        })
-    }
 
     showGuardModal(e) {
         e.preventDefault()
-        this.setState({showGuardModal: true})
+        this.setState({showGuardModal: true, selectedGuard: e.target.id})
     }
 
     closeGuardModal(e) {
@@ -177,43 +154,56 @@ class GuardsHome extends Component {
                 if (guard) {
                     bcrypt.compare(password, guard.password).then(valid => {
                         if (valid) {
-                            this.setState({
-                                guard_id: '',
-                                password: '',
-                                errors: {},
-                                guards: [...this.state.guards, guard.first_name]
-                            })
-                            const signedIn = {
-                                guard_id: guard_id,
-                                signin: new Date().toLocaleString(),
-                                signout: '',
-                                date: new Date().toLocaleDateString()
-                            }
                             dbPromise.then(db => {
-                                let tx = db.transaction('attendance', 'readwrite')
+                                let tx = db.transaction('attendance', 'readonly')
                                 let store = tx.objectStore('attendance')
-                                return store.add(signedIn)
-                            }).then(added => {
-                                this.props.graphql
-                                    .query({
-                                        fetchOptionsOverride: fetchOptionsOverride,
-                                        resetOnLoad: true,
-                                        operation: {
-                                            variables: {
-                                                guard_id: signedIn.guard_id,
-                                                signin: signedIn.signin,
-                                                date: signedIn.date
-                                            },
-                                            query: signin
-                                        }
+                                return store.get(new Date().toLocaleDateString())
+                            }).then(g => {
+                                if (g) {
+                                    let errors = {}
+                                    errors.guard_id = 'You are already signed in'
+                                    this.setState({errors})
+                                } else {
+                                    this.setState({
+                                        guard_id: '',
+                                        password: '',
+                                        errors: {},
+                                        guards: [...this.state.guards, guard.first_name]
                                     })
-                                    .request.then(({data}) => {
-                                        if (data) {
-                                            console.log(data)
-                                        }
+                                    const signedIn = {
+                                        guard_id: guard_id,
+                                        signin: new Date().toLocaleString(),
+                                        signout: '',
+                                        date: new Date().toLocaleDateString()
                                     }
-                                )
+                                    dbPromise.then(db => {
+                                        let tx = db.transaction('attendance', 'readwrite')
+                                        let store = tx.objectStore('attendance')
+                                        return store.add(signedIn)
+                                    }).then(added => {
+                                        this.props.graphql
+                                            .query({
+                                                fetchOptionsOverride: fetchOptionsOverride,
+                                                resetOnLoad: true,
+                                                operation: {
+                                                    variables: {
+                                                        guard_id: signedIn.guard_id,
+                                                        signin: signedIn.signin,
+                                                        date: signedIn.date
+                                                    },
+                                                    query: signin
+                                                }
+                                            })
+                                            .request.then(({data}) => {
+                                                if (data) {
+                                                    console.log(data)
+                                                }
+                                            }
+                                        )
+                                    })
+                                }
                             })
+
                         } else {
                             let errors = {}
                             errors.password = 'Incorrect password'
@@ -241,11 +231,10 @@ class GuardsHome extends Component {
                             <Nav pills vertical className="bd-links" id="bd-docs-nav">
                                 {guards.map(guard => {
                                     return <NavItem>
-                                        <NavLink href="" onClick={this.showGuardModal}> {guard}</NavLink>
+                                        <NavLink href="" onClick={this.showGuardModal} id={guard}> {guard}</NavLink>
                                     </NavItem>
                                 })}
-                                <NavItem> <NavLink href="" onClick={this.showGuardModal}> Sean</NavLink>
-                                </NavItem>
+
                             </Nav>
                         </div>
                         <div className="col-4 col-md-4 col-xl-4 offset-2 bd-content no-float">
@@ -316,8 +305,10 @@ class GuardsHome extends Component {
                             <br/>
                             <strong>Location: </strong>{this.state.location ? this.state.location.label : 'no location set'}
                         </div>
-                        <Consumer>{graphql => <GuardModal graphql={graphql} show={showGuardModal}
-                                                          onClose={this.closeGuardModal}/>}</Consumer>
+                        <Consumer>{graphql => <GuardModal removeGuard={this.removeGuard} graphql={graphql}
+                                                          show={showGuardModal}
+                                                          onClose={this.closeGuardModal}
+                                                          guard={this.state.selectedGuard}/>}</Consumer>
                     </div>
                 </div>
             </div>)
