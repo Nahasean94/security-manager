@@ -144,6 +144,20 @@ const getAllInbox = `
         title
     }
 }`
+
+const getAllGuards = `
+{
+    getAllGuards{
+        id
+       guard_id
+       first_name
+       last_name
+       gender
+       location{
+       name
+       }
+    }
+}`
 const getMessage = `
 query($id:ID!){
     getMessage(id:$id){
@@ -313,6 +327,7 @@ export {
     signout,
     newMessage,
     uploadProfilePicture,
+    getAllGuards,
     updateGuardContactInfo,
     confirmPassword,
     updateGuardBasicInfo,

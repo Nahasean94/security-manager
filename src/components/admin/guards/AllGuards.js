@@ -1,44 +1,40 @@
 import React, {Component} from 'react'
-import {getAllInbox,} from "../../../shared/queries"
+import {getAllGuards,} from "../../../shared/queries"
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import {Consumer, Query} from "graphql-react"
 import {isEmpty} from "lodash"
 import Menu from '../Menu'
 import PropTypes from "prop-types"
-import CurrentGuard from "../../../shared/CurrentGuard"
-import InboxView from "./InboxView"
-import MessageView from "./MessageView"
-import classnames from "classnames"
-import CustomMessage from "./CustomMessageModal"
+import GuardView from "./GuardView"
+import GuardDetails from "./GuardDetails"
 
-class ALlGuards extends Component {
+class AllGuards extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            message: '',
-            showCustomMessageModal: false
+            guard_id: '',
+            showCustomGuardModal: false
         }
-        this.onSelectMessage = this.onSelectMessage.bind(this)
-        this.showCustomMessageModal = this.showCustomMessageModal.bind(this)
-        this.closeCustomMessageModal = this.closeCustomMessageModal.bind(this)
+        this.onSelectGuard = this.onSelectGuard.bind(this)
+        this.showCustomGuardModal = this.showCustomGuardModal.bind(this)
+        this.closeCustomGuardModal = this.closeCustomGuardModal.bind(this)
     }
 
-    onSelectMessage(message) {
-        this.setState({message})
+    onSelectGuard(guard_id) {
+        // CurrentGuard.setGuardId(guard_id)
+        this.setState({guard_id})
     }
 
-    showCustomMessageModal() {
-        this.setState({showCustomMessageModal: true})
+    showCustomGuardModal() {
+        this.setState({showCustomGuardModal: true})
     }
 
-    closeCustomMessageModal() {
-        this.setState({showCustomMessageModal: false})
-
+    closeCustomGuardModal() {
+        this.setState({showCustomGuardModal: false})
     }
 
 
     render() {
-        const {message,showCustomMessageModal} = this.state
 
         return (
             <div className="container-fluid">
@@ -47,7 +43,7 @@ class ALlGuards extends Component {
                         <Menu router={this.context.router} active="guards"/>
                     </div>
                     <div className="col-sm-5 col-md-5 col-xl-5 bd-content">
-                        <button className="btn btn-sm btn-dark" onClick={this.showCustomMessageModal}>New guard</button>
+                        <button className="btn btn-sm btn-dark" onClick={this.showCustomGuardModal}>New guard</button>
                         <br/>
                         <br/>
                         <Query
@@ -55,22 +51,31 @@ class ALlGuards extends Component {
                             loadOnReset
                             fetchOptionsOverride={fetchOptionsOverride}
                             // variables={{guard_id: CurrentGuard.getGuardId()}}
-                            query={getAllInbox}
+                            query={getAllGuards}
                         >
                             {({loading, data}) => {
                                 if (data) {
-                                    if (data.getAllInbox && data.getAllInbox.length > 0) {
-                                        return (<ul className="list-unstyled ">
-                                            {data.getAllInbox.map(inbox => {
-                                                return <li
-                                                    className={classnames("inbox-list", {"inbox-list-selected": inbox.id === this.state.message})}>
-                                                    <InboxView inbox={inbox} onSelectMessage={this.onSelectMessage}/>
-                                                    {/*<hr className="inbox-list"/>*/}
-                                                </li>
-                                            })}
-                                        </ul>)
+                                    if (data.getAllGuards && data.getAllGuards.length > 0) {
+                                        return (
+                                            <table className="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">Guard ID</th>
+                                                    <th scope="col">First name</th>
+                                                    <th scope="col">Last name</th>
+                                                    <th scope="col">Gender</th>
+                                                    <th scope="col">Location</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {data.getAllGuards.map(guard => {
+                                                    return <GuardView guard={guard} onSelectGuard={this.onSelectGuard}/>
+
+                                                })}
+                                                </tbody>
+                                            </table>)
                                     } else {
-                                        return <p>No items on your inbox</p>
+                                        return <p>No attendance records found</p>
                                     }
                                 }
                                 else if (loading) {
@@ -82,18 +87,22 @@ class ALlGuards extends Component {
                         </Query>
                     </div>
                     <div className="col-sm-5 col-md-5 col-xl-5 bd-location">
-                        <MessageView message={message}/>
+                        <div className="row">
+                            <div className="offset-sm-1">
+                                <GuardDetails guard={this.state.guard_id}/></div>
+                        </div>
+
                     </div>
                 </div>
-                <Consumer>{graphql=><CustomMessage graphql={graphql} show={showCustomMessageModal} onClose={this.closeCustomMessageModal}/>}</Consumer>
+
             </div>
         )
 
     }
 }
 
-ALlGuards.contextTypes = {
+AllGuards.contextTypes = {
     router: PropTypes.object.isRequired
 }
-export default ALlGuards
+export default AllGuards
 
