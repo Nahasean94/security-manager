@@ -129,6 +129,21 @@ query($guard_id:String!){
         title
     }
 }`
+
+const getAllInbox = `
+{
+    getAllInbox{
+        id
+        body
+        author{
+            username
+            profile_picture
+                }
+        timestamp
+        message_type
+        title
+    }
+}`
 const getMessage = `
 query($id:ID!){
     getMessage(id:$id){
@@ -303,6 +318,7 @@ export {
     updateGuardBasicInfo,
     changePassword,
     getInbox,
+    getAllInbox,
     getMessage,
     newMessageReply,
     newCustomMessage,

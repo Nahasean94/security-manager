@@ -138,8 +138,29 @@ class GuardsHome extends Component {
     goToProfile(e) {
         e.preventDefault()
         if (this.isValid()) {
-            CurrentGuard.setGuardId(String(this.state.guard_id))
-            this.context.router.history.push('/guards/profile')
+            const {guard_id, password} = this.state
+            dbPromise.then(db => {
+                let tx = db.transaction('guards', 'readonly')
+                let store = tx.objectStore('guards')
+                return store.get(Number(guard_id))
+            }).then(guard => {
+                if (guard) {
+                    bcrypt.compare(password, guard.password).then(valid => {
+                        if (valid) {
+                            CurrentGuard.setGuardId(String(this.state.guard_id))
+                            this.context.router.history.push('/guards/profile')
+                        } else {
+                            let errors = {}
+                            errors.password = 'Incorrect password'
+                            this.setState({errors})
+                        }
+                    })
+                } else {
+                    let errors = {}
+                    errors.guard_id = 'Guard ID Not Found'
+                    this.setState({errors})
+                }
+            })
         }
     }
 
