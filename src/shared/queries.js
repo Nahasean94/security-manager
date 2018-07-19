@@ -114,19 +114,7 @@ mutation($author:String!,$body:String!,$account_type:String!,$message_type:Strin
     
   }
 }`
-const newReport = `
-mutation($guard_id:Int!,$report:String!){
-  newReport(guard_id:$guard_id,report:$report){
-    id
-    report
-    guard_id{
-      first_name
-      last_name
-      profile_picture
-    }
-    timestamp
-  }
-}`
+
 const getInbox = `
 query($guard_id:String!){
     getInbox(guard_id:$guard_id){
@@ -287,6 +275,16 @@ const updateGuardBasicInfo = `
    }
 }
 `
+const updateGuardContactInfo = `
+   mutation($id:ID!,$email:String!,$cellphone:Long!,$postal_address:String) {
+  updateGuardContactInfo(id:$id,email:$email,cellphone:$cellphone,postal_address:$postal_address) {
+  id
+ email
+ cellphone
+ postal_address
+   }
+}
+`
 export {
     addLocation,
     locations,
@@ -300,6 +298,7 @@ export {
     signout,
     newMessage,
     uploadProfilePicture,
+    updateGuardContactInfo,
     confirmPassword,
     updateGuardBasicInfo,
     changePassword,

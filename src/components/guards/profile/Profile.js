@@ -10,6 +10,7 @@ import PropTypes from "prop-types"
 import {Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap'
 import CurrentGuard from "../../../shared/CurrentGuard"
 import UpdateBasicInfo from "../modals/UpdateBasicInfo"
+import UpdateContactInfo from "../modals/UpdateContactInfo"
 
 class Profile extends Component {
     constructor(props) {
@@ -32,6 +33,8 @@ class Profile extends Component {
         this.toggle = this.toggle.bind(this)
         this.showUpdateBasicInfoModal = this.showUpdateBasicInfoModal.bind(this)
         this.closeUpdateBasicInfoModal = this.closeUpdateBasicInfoModal.bind(this)
+        this.showUpdateContactInfoModal = this.showUpdateContactInfoModal.bind(this)
+        this.closeUpdateContactInfoModal = this.closeUpdateContactInfoModal.bind(this)
     }
 
     showUpdateBasicInfoModal() {
@@ -40,6 +43,13 @@ class Profile extends Component {
 
     closeUpdateBasicInfoModal() {
         this.setState({showUpdateBasicInfoModal: false})
+    }
+showUpdateContactInfoModal() {
+        this.setState({showUpdateContactInfoModal: true})
+    }
+
+    closeUpdateContactInfoModal() {
+        this.setState({showUpdateContactInfoModal: false})
     }
 
     toggle(tab) {
@@ -239,7 +249,7 @@ class Profile extends Component {
                                             if (data.getGuardContactInfo) {
                                                 return (
                                                     <div>
-                                                        <button className="btn-dark btn-sm">Update contact
+                                                        <button className="btn-dark btn-sm" onClick={this.showUpdateContactInfoModal}>Update contact
                                                             info
                                                         </button>
 
@@ -267,7 +277,10 @@ class Profile extends Component {
                                                             </tr>
                                                             </tbody>
                                                         </table>
-
+                                                        <Consumer>{graphql => <UpdateContactInfo graphql={graphql}
+                                                                                               show={this.state.showUpdateContactInfoModal}
+                                                                                               onClose={this.closeUpdateContactInfoModal}
+                                                                                               info={data.getGuardContactInfo}/>}</Consumer>
                                                     </div>
                                                 )
                                             } else {
