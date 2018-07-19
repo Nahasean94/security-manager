@@ -15,6 +15,14 @@ const addLocation = `
   }
 }
 `
+const updateLocation = `
+   mutation($id:ID!,$name:String!) {
+  updateLocation(id:$id,name:$name) {
+    id
+    name
+  }
+}
+`
 const signup = `
    mutation($username:String!,$email:String!,$password:String!) {
   signup(username:$username,email:$email,password:$password) {
@@ -71,6 +79,9 @@ guard_id
 first_name
 email
 password
+gender
+first_name
+last_name
 }
 }`
 const signin = `
@@ -156,6 +167,13 @@ const getAllGuards = `
        location{
        name
        }
+    }
+}`
+const getAllLocations = `
+{
+    getAllLocations{
+        id
+      name
     }
 }`
 const getMessage = `
@@ -316,6 +334,7 @@ const updateGuardContactInfo = `
 `
 export {
     addLocation,
+    updateLocation,
     locations,
     registerGuard,
     signup,
@@ -340,6 +359,7 @@ export {
     getGuardAttendance,
     getGuardInfo,
     getGuardPaymentInfo,
-    getGuardContactInfo
+    getGuardContactInfo,
+    getAllLocations
 
 }

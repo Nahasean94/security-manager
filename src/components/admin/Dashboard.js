@@ -1,6 +1,6 @@
 import React from 'react'
 import NewGuard from "../guards/modals/NewGuard"
-import NewLocationForm from "../locations/NewLocationForm"
+import NewLocationForm from "./locations/NewLocationForm"
 import {Consumer} from "graphql-react"
 import TestModal from "../guards/Test"
 

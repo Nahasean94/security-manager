@@ -1,9 +1,9 @@
 import React from 'react'
 import validator from 'validator'
 import {isEmpty} from 'lodash'
-import TextFieldGroup from '../../shared/TextFieldsGroup'
-import {fetchOptionsOverride} from "../../shared/fetchOverrideOptions"
-import {addLocation, isLocationExists} from "../../shared/queries"
+import TextFieldGroup from '../../../shared/TextFieldsGroup'
+import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
+import {addLocation, isLocationExists} from "../../../shared/queries"
 import PropTypes from "prop-types"
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 
