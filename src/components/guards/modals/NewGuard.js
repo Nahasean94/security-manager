@@ -129,6 +129,10 @@ class NewGuard extends Component {
         if (Date.parse(data.dob) > Date.parse(data.employment_date)) {
             errors.employment_date = 'You cannot be employed before you are born'
         }
+        if (Date.parse(data.employment_date) > Date.parse(new Date())) {
+            errors.employment_date = 'You cannot be employed in the future'
+        }
+
         if (Date.parse(data.employment_date) < Date.parse(new Date('1976'))) {
             errors.dob = 'You should be retired by now'
         }

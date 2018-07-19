@@ -42,6 +42,9 @@ class ApplyForLeave extends Component {
         if (validator.isEmpty(data.message)) {
             errors.message = 'This field is required'
         }
+        if (Date.parse(data.date) < Date.parse(new Date())) {
+            errors.date = 'Leave cannot start in the past'
+        }
         if (!data.date) {
             errors.date = 'This field is required'
         }
