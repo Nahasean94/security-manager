@@ -297,7 +297,7 @@ class GuardDetails extends Component {
                                                 {({loading, data}) => {
                                                     if (data) {
                                                         if (data.getGuardPaymentInfo) {
-                                                            let total_deductions
+                                                            let total_deductions=0
                                                             return (
                                                                 <div>
                                                                     <table className="table table-borderless">
@@ -334,7 +334,7 @@ class GuardDetails extends Component {
                                                                         <tr>
                                                                             <th scope="row">Net Salary
                                                                             </th>
-                                                                            <td>{getGuardPaymentInfo.gross_salary-total_deductions}</td>
+                                                                            <td>{data.getGuardPaymentInfo.gross_salary-total_deductions}</td>
                                                                         </tr>
                                                                         </tbody>
                                                                     </table>
@@ -353,6 +353,73 @@ class GuardDetails extends Component {
                                                 }
                                             </Query>
                                         </TabPane>
+                                        {/*<TabPane tabId="payment">*/}
+                                            {/*<Query*/}
+                                                {/*loadOnMount*/}
+                                                {/*loadOnReset*/}
+                                                {/*fetchOptionsOverride={fetchOptionsOverride}*/}
+                                                {/*variables={{guard_id: this.props.guard}}*/}
+                                                {/*query={getGuardPaymentInfo}*/}
+                                            {/*>*/}
+                                                {/*{({loading, data}) => {*/}
+                                                    {/*if (data) {*/}
+                                                        {/*if (data.getGuardPaymentInfo) {*/}
+                                                            {/*let total_deductions*/}
+                                                            {/*return (*/}
+                                                                {/*<div>*/}
+                                                                    {/*<table className="table table-borderless">*/}
+                                                                        {/*<tbody>*/}
+                                                                        {/*<tr>*/}
+                                                                            {/*<th scope="row">Gross salary:</th>*/}
+                                                                            {/*<td>{data.getGuardPaymentInfo.gross_salary}</td>*/}
+                                                                        {/*</tr>*/}
+                                                                        {/*<tr>*/}
+                                                                            {/*<th scope="row">Payment contract*/}
+                                                                            {/*</th>*/}
+                                                                            {/*<td>{data.getGuardPaymentInfo.contract}</td>*/}
+                                                                        {/*</tr>*/}
+                                                                        {/*<tr>*/}
+                                                                            {/*<th scope="row">Deductions*/}
+                                                                            {/*</th>*/}
+                                                                            {/*{data.getGuardPaymentInfo.deductions.length && data.getGuardPaymentInfo.deductions.map(deduction => {*/}
+                                                                                {/*total_deductions=total_deductions+deduction.amount*/}
+                                                                                {/*return (*/}
+                                                                                    {/*<tr>*/}
+                                                                                        {/*<th scope="row">{deduction.name.toLocaleUpperCase()}*/}
+                                                                                        {/*</th>*/}
+                                                                                        {/*<td>{deduction.amount}</td>*/}
+                                                                                    {/*</tr>*/}
+                                                                                {/*)*/}
+                                                                            {/*})}*/}
+                                                                            {/*<hr/>*/}
+                                                                            {/*<tr>*/}
+                                                                                {/*<th scope="row">Total deductions*/}
+                                                                                {/*</th>*/}
+                                                                                {/*<td>{total_deductions}</td>*/}
+                                                                            {/*</tr>*/}
+                                                                        {/*</tr>*/}
+                                                                        {/*<tr>*/}
+                                                                            {/*<th scope="row">Net Salary*/}
+                                                                            {/*</th>*/}
+                                                                            {/*<td>{getGuardPaymentInfo.gross_salary-total_deductions}</td>*/}
+                                                                        {/*</tr>*/}
+                                                                        {/*</tbody>*/}
+                                                                    {/*</table>*/}
+
+                                                                {/*</div>*/}
+                                                            {/*)*/}
+                                                        {/*} else {*/}
+                                                            {/*return <p>No payment information was found</p>*/}
+                                                        {/*}*/}
+                                                    {/*}*/}
+                                                    {/*else if (loading) {*/}
+                                                        {/*return <p>Loading…</p>*/}
+                                                    {/*}*/}
+                                                    {/*return <p>Loading failed.</p>*/}
+                                                {/*}*/}
+                                                {/*}*/}
+                                            {/*</Query>*/}
+                                        {/*</TabPane>*/}
                                     </TabContent>
                                 </div></div></div>:<p>Select guard to view details</p>)
 

@@ -128,7 +128,7 @@ class EditLocation extends React.Component {
         if (show) {
             return (
                 <Modal isOpen={show} toggle={onClose} size="lg" className="modal-dialog modal-dialog-centered">
-                    <ModalHeader toggle={onClose}>Add a new location</ModalHeader>
+                    <ModalHeader toggle={onClose}>Edit location</ModalHeader>
                     <ModalBody>
                         {message ? <div>
                             {message}
