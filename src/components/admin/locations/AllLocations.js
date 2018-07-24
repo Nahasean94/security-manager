@@ -47,7 +47,7 @@ class AllLocations extends Component {
                         <button className="btn btn-sm btn-dark" onClick={this.showNewLocationModal}>New location</button>
                         <br/>
                         <br/>
-                        <NewLocationForm show={this.state.showNewLocationModal} onClose={this.closeNewLocationModal}/>
+                        <Consumer>{graphql=><NewLocationForm graphql={graphql} show={this.state.showNewLocationModal} onClose={this.closeNewLocationModal}/>}</Consumer>
                         <Query
                             loadOnMount
                             loadOnReset

@@ -123,6 +123,10 @@ class NewGuard extends Component {
         if (Date.parse(data.dob) > Date.parse(new Date('2000'))) {
             errors.dob = "A guard must be 18 and above"
         }
+        if (((Date.parse(data.employment_date)-Date.parse(data.dob))/(1000*60*60*24*365))<18) {
+
+            errors.employment_date= "A guard must be 18 and above"
+        }
         if (validator.isEmpty(data.employment_date)) {
             errors.employment_date = 'This field is required'
         }

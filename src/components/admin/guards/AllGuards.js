@@ -47,7 +47,7 @@ class AllGuards extends Component {
                         <button className="btn btn-sm btn-dark" onClick={this.showNewGuardModal}>New guard</button>
                         <br/>
                         <br/>
-                        <NewGuard show={this.state.showNewGuardModal} onClose={this.closeNewGuardModal}/>
+                        <Consumer>{graphql=> <NewGuard graphql={graphql}show={this.state.showNewGuardModal} onClose={this.closeNewGuardModal}/>}</Consumer>
                         <Query
                             loadOnMount
                             loadOnReset
