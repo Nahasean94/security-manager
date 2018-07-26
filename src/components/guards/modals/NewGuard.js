@@ -5,12 +5,12 @@ import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import validator from 'validator'
 import {isEmpty} from 'lodash'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {locations, registerGuard} from '../../../shared/queries'
+import {getPaymentForContract, locations, registerGuard} from '../../../shared/queries'
 import {Query} from "graphql-react"
 import Select from 'react-select'
 
 
-let locationOptions
+let locationOptions,paymentOptions
 
 class NewGuard extends Component {
     constructor(props) {
@@ -52,7 +52,7 @@ class NewGuard extends Component {
         this.forwardToPaymentDetails = this.forwardToPaymentDetails.bind(this)
         this.backToPaymentDetails = this.backToPaymentDetails.bind(this)
         this.handleLocationChange = this.handleLocationChange.bind(this)
-        // this.selectPaymentContract = this.selectPaymentContract.bind(this)
+        this.handleGrossChange = this.handleGrossChange.bind(this)
     }
 
     // selectPaymentContract(e){
@@ -60,6 +60,9 @@ class NewGuard extends Component {
     // }
     handleLocationChange = (location) => {
         this.setState({location})
+    }
+    handleGrossChange = (gross) => {
+        this.setState({gross})
     }
 
     backToPersonalDetails(e) {
@@ -235,7 +238,7 @@ class NewGuard extends Component {
                             postal_address: this.state.postal_address,
                             location: this.state.location.value,
                             contract: this.state.contract,
-                            gross: this.state.gross,
+                            gross: this.state.gross.value,
                             paye: this.state.paye,
                             nssf: this.state.nssf,
                             nhif: this.state.nhif,
@@ -295,30 +298,108 @@ class NewGuard extends Component {
         const {
             errors, isLoading, invalid, guard_id, surname, first_name, last_name, dob, gender, nationalID, employment_date, password, passwordConfirmation, display, message, email, cellphone, postal_address, location, gross, paye, nssf, nhif, loans, others, contract
         } = this.state
-        const monthly = <TextFieldGroup
-            label="Mothly Salary"
-            type="number"
-            name="gross"
-            value={gross}
-            onChange={this.onChange}
-            error={errors.gross}
-        />
-        const weekly = <TextFieldGroup
-            label="Weekly Salary"
-            type="number"
-            name="gross"
-            value={gross}
-            onChange={this.onChange}
-            error={errors.gross}
-        />
-        const hourly = <TextFieldGroup
-            label="Hourly rate"
-            type="number"
-            name="gross"
-            value={gross}
-            onChange={this.onChange}
-            error={errors.gross}
-        />
+        const monthly =     <div className="form-group row">
+            <label className="col-sm-3 col-form-label" htmlFor="hosts">Select amount</label>
+            <div className="col-sm-9"> <Query
+            loadOnMount
+            loadOnReset
+            fetchOptionsOverride={fetchOptionsOverride}
+            variables={{contract:'month'}}
+            query={getPaymentForContract}
+        >
+            {({loading, data}) => {
+                if (data) {
+                    paymentOptions = data.getPaymentForContract.map(payment => {
+                        return {
+                            label: payment.amount,
+                            value: payment.amount
+                        }
+                    })
+                    return <Select
+                        closeOnSelect={true}
+                        onChange={this.handleGrossChange}
+                        options={paymentOptions}
+                        placeholder="Select amount"
+                        removeSelected={true}
+                        value={this.state.gross}/>
+                }
+                else if (loading) {
+                    return <p>Loading…</p>
+                }
+                return <p>Loading failed.</p>
+            }
+            }
+        </Query>
+            </div>
+        </div>
+        const weekly =     <div className="form-group row">
+            <label className="col-sm-3 col-form-label" htmlFor="hosts">Select amount</label>
+            <div className="col-sm-9"> <Query
+            loadOnMount
+            loadOnReset
+            fetchOptionsOverride={fetchOptionsOverride}
+            variables={{contract:'week'}}
+            query={getPaymentForContract}
+        >
+            {({loading, data}) => {
+                if (data) {
+                    paymentOptions = data.getPaymentForContract.map(payment => {
+                        return {
+                            label: payment.amount,
+                            value: payment.amount
+                        }
+                    })
+                    return <Select
+                        closeOnSelect={true}
+                        onChange={this.handleGrossChange}
+                        options={paymentOptions}
+                        placeholder="Select amount"
+                        removeSelected={true}
+                        value={this.state.gross}/>
+                }
+                else if (loading) {
+                    return <p>Loading…</p>
+                }
+                return <p>Loading failed.</p>
+            }
+            }
+        </Query>
+            </div>
+        </div>
+        const hourly =    <div className="form-group row">
+            <label className="col-sm-3 col-form-label" htmlFor="hosts">Select amount</label>
+            <div className="col-sm-9"> <Query
+            loadOnMount
+            loadOnReset
+            fetchOptionsOverride={fetchOptionsOverride}
+            variables={{contract:'day'}}
+            query={getPaymentForContract}
+        >
+            {({loading, data}) => {
+                if (data) {
+                    paymentOptions = data.getPaymentForContract.map(payment => {
+                        return {
+                            label: payment.amount,
+                            value: payment.amount
+                        }
+                    })
+                    return <Select
+                        closeOnSelect={true}
+                        onChange={this.handleGrossChange}
+                        options={paymentOptions}
+                        placeholder="Select amount"
+                        removeSelected={true}
+                        value={this.state.gross}/>
+                }
+                else if (loading) {
+                    return <p>Loading…</p>
+                }
+                return <p>Loading failed.</p>
+            }
+            }
+        </Query>
+            </div>
+        </div>
         if (show) {
             return (
                 <Modal isOpen={show} toggle={onClose} size="lg" className="modal-dialog-centered">

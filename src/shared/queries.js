@@ -190,6 +190,14 @@ mutation($amount:Int!,$contract:String!){
        contract
     }
 }`
+const getPaymentForContract = `
+query($contract:String!){
+    getPaymentForContract(contract:$contract){
+       id
+       amount
+       contract
+    }
+}`
 const getAllSalaries = `
 {
     getAllSalaries{
@@ -408,5 +416,6 @@ export {
     getAllLocations,
     getAllSalaries,
     isSalaryBracketExists,
-    addSalaryBracket
+    addSalaryBracket,
+    getPaymentForContract
 }
