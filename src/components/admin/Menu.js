@@ -19,6 +19,10 @@ export default ({router, active}) => {
         e.preventDefault()
         router.history.push("/admin/attendance")
     }
+    const onSalaryLink = (e) => {
+        e.preventDefault()
+        router.history.push("/admin/salaries")
+    }
 
     return <Nav pills vertical  className="bd-links" id="bd-docs-nav">
         <NavItem>
@@ -32,6 +36,9 @@ export default ({router, active}) => {
         </NavItem>
         <NavItem>
             <NavLink href="" onClick={onAttendanceLink} active={active === 'attendance'}>Attendance</NavLink>
+        </NavItem>
+        <NavItem>
+            <NavLink href="" onClick={onSalaryLink} active={active === 'salaries'}>Salaries</NavLink>
         </NavItem>
 
     </Nav>

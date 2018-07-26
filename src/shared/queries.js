@@ -1,5 +1,3 @@
-import requireAuth from "../components/utils/requireAuth"
-
 const login = `
    mutation($email:String!,$password:String!) {
   login(email:$email,password:$password) {
@@ -178,6 +176,39 @@ const getAllLocations = `
       name
     }
 }`
+const isSalaryBracketExists = `
+query($amount:Int!,$contract:String!){
+    isSalaryBracketExists(amount:$amount,contract:$contract){
+       exists
+    }
+}`
+const addSalaryBracket = `
+mutation($amount:Int!,$contract:String!){
+    addSalaryBracket(amount:$amount,contract:$contract){
+       id
+       amount
+       contract
+    }
+}`
+const getAllSalaries = `
+{
+    getAllSalaries{
+        id
+        guard_id
+        contract
+        deductions{
+            name
+            amount
+        }
+        transactions{
+          
+            timestamp
+            amount
+            text
+        }
+        gross_salary
+    }
+}`
 const getMessage = `
 query($id:ID!){
     getMessage(id:$id){
@@ -188,11 +219,11 @@ query($id:ID!){
             profile_picture
                 }
                 replies{
-                body
-                timestamp
-                author{
-                username
-                profile_picture
+                    body
+                    timestamp
+                    author{
+                    username
+                    profile_picture
                 }
                 }
         timestamp
@@ -223,12 +254,12 @@ mutation($author:String!,$body:String!,$account_type:String!,$message_type:Strin
             profile_picture
                 }
                 replies{
-                body
-                timestamp
-                author{
-                username
-                profile_picture
-                }
+                    body
+                    timestamp
+                    author{
+                        username
+                        profile_picture
+                    }
                 }
         timestamp
         message_type
@@ -236,25 +267,25 @@ mutation($author:String!,$body:String!,$account_type:String!,$message_type:Strin
       }
 }`
 const getGuardAttendance = `
-query($guard_id:String!){
-    getGuardAttendance(guard_id:$guard_id){
-       id
-       signin
-       signout
-       date
-       guard_id
-      }
-}`
+    query($guard_id:String!){
+        getGuardAttendance(guard_id:$guard_id){
+           id
+           signin
+           signout
+           date
+           guard_id
+          }
+    }`
 const getAllGuardsAttendance = `
-{
-    getAllGuardsAttendance{
-       id
-       signin
-       signout
-       date
-       guard_id
-      }
-}`
+    {
+        getAllGuardsAttendance{
+           id
+           signin
+           signout
+           date
+           guard_id
+          }
+    }`
 const getGuardInfo = `
 query($guard_id:String!){
 getGuardInfo(guard_id:$guard_id){
@@ -374,6 +405,8 @@ export {
     getGuardInfo,
     getGuardPaymentInfo,
     getGuardContactInfo,
-    getAllLocations
-
+    getAllLocations,
+    getAllSalaries,
+    isSalaryBracketExists,
+    addSalaryBracket
 }
