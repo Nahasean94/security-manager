@@ -216,7 +216,6 @@ class NewGuard extends Component {
     onSubmit(e) {
         e.preventDefault()
         if (this.isPaymentValid() || !this.state.invalid) {
-            console.log(this.state)
             this.setState({errors: {}, isLoading: true})
             this.props.graphql
                 .query({
