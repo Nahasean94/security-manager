@@ -1,10 +1,32 @@
 import React from 'react'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import { getMessage} from "../../../shared/queries"
+import {approveLeave, getMessage} from "../../../shared/queries"
 import {Consumer, Query} from "graphql-react"
 import Comments from "./comments/Comments"
 
 class MessageView extends React.Component {
+    constructor(props){
+        super(props)
+        this.state={
+            message:''
+        }
+       this.approveLeave=this.approveLeave.bind(this)
+    }
+    approveLeave(id) {
+        this.props.graphql.query({
+            fetchOptionsOverride: fetchOptionsOverride,
+            resetOnLoad: true,
+            operation: {
+                variables: {id:id},
+                query: approveLeave
+            }
+        }).request.then(({loading, data}) => {
+            if (data) {
+
+            }
+        })
+    }
+
     render() {
         const {message} = this.props
         if (message) {
@@ -17,10 +39,12 @@ class MessageView extends React.Component {
             >
                 {({loading, data}) => {
                     if (data) {
-                        const {id, body, author, replies, timestamp,message_type,title} = data.getMessage
+                        const {id, body, author, replies, timestamp, message_type, duration, title, approved} = data.getMessage
                         return <div>
-                            {message_type==='report'?<h4>Report</h4>:message_type==='leave'?<h4>Leave Request</h4>:<h4>{title}</h4>}
+                            {message_type === 'report' ? <h4>Report</h4> : message_type === 'leave' ?
+                                <h4>Leave Request</h4> : <h4>{title}</h4>}
                             <hr/>
+                            {this.state.message && <div className="alert alert-success">{this.state.message}</div>}
                             <div className="row view-leave">
                                 <div className="col-sm-3">
                                     <img
@@ -39,6 +63,10 @@ class MessageView extends React.Component {
                             <br/>
                             <br/>
                             <p>{body}...</p>
+                            {message_type === 'leave' ? !approved ?
+                                <button className="btn btn-sm btn-success" onClick={() => this.approveLeave(id)
+
+                                }>Approve</button> : <div className="alert alert-success">Approved</div> : ''}
                             <hr/>
                             <h5>Replies</h5>
                             <Consumer>{graphql =>

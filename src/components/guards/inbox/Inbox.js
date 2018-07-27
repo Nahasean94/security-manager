@@ -84,7 +84,7 @@ class Inbox extends Component {
                         </Query>
                     </div>
                     <div className="col-sm-5 col-md-5 col-xl-5 bd-location">
-                        <MessageView message={message}/>
+                      <MessageView message={message}/>
                     </div>
                 </div>
                 <Consumer>{graphql=><CustomMessage graphql={graphql} show={showCustomMessageModal} onClose={this.closeCustomMessageModal}/>}</Consumer>

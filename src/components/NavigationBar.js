@@ -5,6 +5,8 @@ import SigninPage from './admin/SigninPage'
 import {Consumer} from "graphql-react"
 import jwt from "jsonwebtoken"
 import {Link} from "react-router-dom"
+import Inbox from "./admin/inbox/Inbox"
+import PropTypes from "prop-types"
 
 class NavigationBar extends React.Component {
     constructor(props) {
@@ -29,7 +31,6 @@ class NavigationBar extends React.Component {
 
     logout(e) {
         e.preventDefault()
-        window.location.reload()
         localStorage.removeItem('SecurityManager')
         this.context.router.history.push('/guards')
     }
@@ -76,5 +77,7 @@ class NavigationBar extends React.Component {
     }
 }
 
-
+Inbox.contextTypes = {
+    router: PropTypes.object.isRequired
+}
 export default NavigationBar

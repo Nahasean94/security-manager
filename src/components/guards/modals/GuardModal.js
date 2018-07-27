@@ -69,6 +69,7 @@ class GuardModal extends React.Component {
                                 password: '',
                                 errors: {},
                             })
+                            this.props.onClose()
                             const todayDate = new Date().toLocaleString()
                             let date, signin
                             dbPromise.then(db => {
@@ -105,7 +106,7 @@ class GuardModal extends React.Component {
                                         .request.then(({data}) => {
                                             if (data) {
                                                 this.props.removeGuard(this.props.guard)
-                                               this.props.onClose()
+
                                             }
                                         }
                                     )

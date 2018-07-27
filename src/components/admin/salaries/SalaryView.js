@@ -9,7 +9,7 @@ class SalaryView extends React.Component {
                   return <tr>
                         <td><a href=""  onClick={(e)=>{
                             e.preventDefault()
-                            this.props.onSelectPayment(transaction,this.props.salary)
+                            this.props.onSelectSalary(transaction,this.props.salary)
                         }}>{guard_id}</a></td>
                         <td>{transaction.amount}</td>
                         <td>{contract}</td>
@@ -18,9 +18,7 @@ class SalaryView extends React.Component {
                 })
             )
         }
-        return (
-            <div>No payments found</div>
-        )
+        return null
     }
 }
 

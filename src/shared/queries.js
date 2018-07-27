@@ -198,6 +198,29 @@ query($contract:String!){
        contract
     }
 }`
+const approveLeave = `
+mutation($id:ID!){
+    approveLeave(id:$id){
+        id
+        body
+        author{
+            username
+            profile_picture
+                }
+                replies{
+                    body
+                    timestamp
+                    author{
+                    username
+                    profile_picture
+                }
+                }
+        timestamp
+        message_type
+        title
+        approved
+    }
+}`
 const getAllSalaries = `
 {
     getAllSalaries{
@@ -237,6 +260,7 @@ query($id:ID!){
         timestamp
         message_type
         title
+        approved
     }
 }`
 const newMessageReply = `
@@ -417,5 +441,6 @@ export {
     getAllSalaries,
     isSalaryBracketExists,
     addSalaryBracket,
-    getPaymentForContract
+    getPaymentForContract,
+    approveLeave
 }

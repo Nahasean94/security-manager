@@ -17,7 +17,7 @@ class SalaryTable extends React.Component {
             salary:'',
             showNewSalaryBracketModal:false
         }
-        this.onSelectPayment = this.onSelectPayment.bind(this)
+        this.onSelectSalary = this.onSelectSalary.bind(this)
         this.showNewSalaryBracketModal = this.showNewSalaryBracketModal.bind(this)
         this.closeNewSalaryBracketModal = this.closeNewSalaryBracketModal.bind(this)
 
@@ -31,7 +31,7 @@ class SalaryTable extends React.Component {
     }
 
 
-    onSelectPayment(transaction,salary) {
+    onSelectSalary(transaction,salary) {
         this.setState({transaction,salary})
 
     }

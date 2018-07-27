@@ -115,14 +115,14 @@ class ApplyForLeave extends Component {
                                 onChange={this.onChange}
                                 error={errors.date}
                             />
-                            <TextFieldGroup
-                                label="Duration of leave(days)"
-                                type="number"
-                                name="duration"
-                                value={this.state.duration}
-                                onChange={this.onChange}
-                                error={errors.duration}
-                            />
+                            {/*<TextFieldGroup*/}
+                                {/*label="Duration of leave(days)"*/}
+                                {/*type="number"*/}
+                                {/*name="duration"*/}
+                                {/*value={this.state.duration}*/}
+                                {/*onChange={this.onChange}*/}
+                                {/*error={errors.duration}*/}
+                            {/*/>*/}
                             <div className="form-group row">
                                 <div className="col-sm-3"><label htmlFor="message">Reason for leave</label>
                                 </div>

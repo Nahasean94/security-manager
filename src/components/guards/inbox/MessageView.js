@@ -17,7 +17,7 @@ class MessageView extends React.Component {
             >
                 {({loading, data}) => {
                     if (data) {
-                        const {id, body, author, replies, timestamp,message_type,title} = data.getMessage
+                        const {id, body, author, replies, timestamp,message_type,title,approved} = data.getMessage
                         return <div>
                             {message_type==='report'?<h4>Report</h4>:message_type==='leave'?<h4>Leave Request</h4>:<h4>{title}</h4>}
                             <hr/>
@@ -39,6 +39,7 @@ class MessageView extends React.Component {
                             <br/>
                             <br/>
                             <p>{body}...</p>
+                            {approved ? <div className="alert alert-success">Approved</div> :<div className="alert alert-dark">Awaiting approval</div>}
                             <hr/>
                             <h5>Replies</h5>
                             <Consumer>{graphql =>
