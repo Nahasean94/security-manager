@@ -9,6 +9,7 @@ import {dbPromise} from '../indexDB'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import {signout} from "../../../shared/queries"
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
+import SignedInGuards from '../../guards/static-code/SignedInGuards'
 
 class GuardModal extends React.Component {
     constructor(props) {
@@ -106,6 +107,7 @@ class GuardModal extends React.Component {
                                         .request.then(({data}) => {
                                             if (data) {
                                                 this.props.removeGuard(this.props.guard)
+                                                // SignedInGuards.removeGuard(this.props.guard)
 
                                             }
                                         }

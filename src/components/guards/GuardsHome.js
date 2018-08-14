@@ -12,6 +12,8 @@ import GuardModal from "./modals/GuardModal"
 import PropTypes from 'prop-types'
 import CurrentGuard from '../../shared/CurrentGuard'
 import {Nav, NavItem, NavLink} from "reactstrap"
+import SignedInGuards from './static-code/SignedInGuards'
+
 
 let locationOptions
 
@@ -21,7 +23,7 @@ class GuardsHome extends Component {
         this.state = {
             guard_id: '',
             password: '',
-            guards: [],
+            guards: SignedInGuards.getGuards(),
             location: '',
             errors: {},
             isLoading: false,
@@ -42,7 +44,9 @@ class GuardsHome extends Component {
     }
 
     removeGuard(guard) {
-        this.setState({guards: this.state.guards.filter(g => g !== guard)})
+        SignedInGuards.removeGuard(guard)
+        console.log(guard)
+        this.setState({guards: SignedInGuards.getGuards()})
         console.log(this.state.guards)
     }
 
@@ -58,31 +62,34 @@ class GuardsHome extends Component {
 
     handleLocationChange = (location) => {
         this.setState({location})
-        this.props.graphql
-            .query({
-                fetchOptionsOverride: fetchOptionsOverride,
-                resetOnLoad: true,
-                operation: {
-                    variables: {id: location.value},
-                    query: findGuardsInLocation
-                }
-            })
-            .request.then(({data}) => {
-                if (data) {
-                    if (data.findGuardsInLocation.length > 0) {
-                        dbPromise.then(function (db) {
-                            let tx = db.transaction('guards', 'readwrite')
-                            let store = tx.objectStore('guards')
-                            return data.findGuardsInLocation.map(guard => {
-                                return store.add(guard)
+        if (location) {
+            this.props.graphql
+                .query({
+                    fetchOptionsOverride: fetchOptionsOverride,
+                    resetOnLoad: true,
+                    operation: {
+                        variables: {id: location.value},
+                        query: findGuardsInLocation
+                    }
+                })
+                .request.then(({data}) => {
+                    if (data) {
+                        if (data.findGuardsInLocation.length > 0) {
+                            dbPromise.then(function (db) {
+                                let tx = db.transaction('guards', 'readwrite')
+                                let store = tx.objectStore('guards')
+                                return data.findGuardsInLocation.map(guard => {
+                                    return store.add(guard)
+                                })
+                            }).then(sth => {
+                                console.log(sth)
                             })
-                        }).then(sth => {
-                            console.log(sth)
-                        })
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
+
     }
 
     onChange(e) {
@@ -164,11 +171,12 @@ class GuardsHome extends Component {
                                     errors.guard_id = 'You are already signed in'
                                     this.setState({errors})
                                 } else {
+                                    SignedInGuards.addGuard(guard.first_name)
                                     this.setState({
                                         guard_id: '',
                                         password: '',
                                         errors: {},
-                                        guards: [...this.state.guards, guard.first_name]
+                                        guards: SignedInGuards.getGuards()
                                     })
                                     const signedIn = {
                                         guard_id: guard_id,

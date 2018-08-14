@@ -77,7 +77,7 @@ class NavigationBar extends React.Component {
     }
 }
 
-Inbox.contextTypes = {
+NavigationBar.contextTypes = {
     router: PropTypes.object.isRequired
 }
 export default NavigationBar

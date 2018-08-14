@@ -39,7 +39,7 @@ class MessageView extends React.Component {
                             <br/>
                             <br/>
                             <p>{body}...</p>
-                            {approved ? <div className="alert alert-success">Approved</div> :<div className="alert alert-dark">Awaiting approval</div>}
+                            {approved ? <div className="alert alert-success">Approved</div> :message_type==='leave'?<div className="alert alert-dark">Awaiting approval</div>:''}
                             <hr/>
                             <h5>Replies</h5>
                             <Consumer>{graphql =>
